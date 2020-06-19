@@ -1,0 +1,18 @@
+{
+    "tags": {
+        "armenia": {
+            "name": "armenia-1.0",
+            "profile": "catv_armenia_nocolor_hgu_xpon_wifi_nocable_novoice_nousb"
+        }
+    },
+    "trunk": {
+        "fujian": {
+            "name": "fujian",
+            "profile": "catv_fujian_nocolor_hgu_xpon_wifi_cable_voice_usb"
+        },
+        "wuyi": {
+            "name": "wuyi",
+            "profile": "catv_wuyi_nocolor_sfu_xpon_nowifi_cable_novoice_nousb"
+        }
+    }
+}
