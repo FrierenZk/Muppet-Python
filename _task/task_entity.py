@@ -16,7 +16,7 @@ class TaskEntity:
             self.shell_process = subprocess.Popen(cmd, bufsize=30, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         def __init__(self, task: str, profile: str):
-            threading.Thread.__init__(self)
+            super().__init__()
             self.task = task
             self.profile = profile
 
