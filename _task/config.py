@@ -7,7 +7,6 @@ from typing import Dict, List, Iterator
 class Config:
     build_list: Dict[str, Dict[str, str]] = {}
     _list_file = "build_list.json"
-    current_ID = 1
 
     def __init__(self):
         try:
