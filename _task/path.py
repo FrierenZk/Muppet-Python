@@ -1,3 +1,5 @@
+import os
+
 from _task.config import config
 
 type_dir = {
@@ -25,7 +27,7 @@ def _image_dir(task: str):
     name = config.get_name(task)
     if name is None:
         return None
-    return "~/catv/" + t + "/" + name + "/"
+    return os.path.expanduser('~')+"/catv/" + t + "/" + name + "/"
 
 
 def _source_dir(task: str):
