@@ -1,10 +1,8 @@
-import os
-import shutil
-import threading
-from multiprocessing import cpu_count
-from typing import Dict, Deque
-from time import sleep
+from threading import Thread
 from collections import deque
+from multiprocessing import cpu_count
+from time import sleep
+from typing import Dict, Deque
 
 from _task.task_entity import TaskEntity
 
@@ -13,7 +11,7 @@ class Muppet:
     task_list_waiting: Deque[TaskEntity] = deque()
     task_list: Dict[str, TaskEntity] = {}
 
-    class TaskCheck(threading.Thread):
+    class TaskCheck(Thread):
         status: bool = True
 
         def __init__(self, m):
@@ -53,7 +51,6 @@ class Muppet:
                     file.close()
             except IOError as err:
                 print("muppet", err)
-                os.remove("tasks.txt.tmp")
             except LookupError as err:
                 print("muppet", err)
             finally:
@@ -65,7 +62,7 @@ class Muppet:
 
     def callback(self, task):
         self.task_list.pop(task)
-        print("muppet callback")
+        print(task, "finished")
 
     def run(self):
         while True:
@@ -76,8 +73,6 @@ class Muppet:
                     self.task_list[i.task].run()
                 else:
                     break
-            print("working list count = " + str(len(self.task_list)))
-            print("waiting list count = " + str(len(self.task_list_waiting)))
             sleep(10)
 
     def __del__(self):
