@@ -1,5 +1,5 @@
-import sys
-from . import main as _main
+from muppet import Muppet
 
 if __name__ == "__main__":
-    sys.exit(_main())
+    c = Muppet()
+    c.run()
