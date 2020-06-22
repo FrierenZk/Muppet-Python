@@ -1,7 +1,7 @@
 import json
-import shutil
 import os
-from typing import Dict, List, Iterator
+import shutil
+from typing import Dict
 
 
 class Config:
@@ -54,9 +54,12 @@ class Config:
                 file.write(string)
                 file.close()
                 shutil.move(self._list_file + ".tmp", self._list_file)
-        except IOError:
+        except IOError as err:
+            print("config", err)
             os.remove(self._list_file + ".tmp")
-        except LookupError:
+        except LookupError as err:
+            print("config", err)
+        finally:
             return
 
     def get_type(self, task: str):
@@ -82,3 +85,6 @@ class Config:
             if value in self.build_list[task]:
                 return self.build_list[task][value]
         return None
+
+
+config = Config()
