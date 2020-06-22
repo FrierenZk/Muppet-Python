@@ -1,6 +1,6 @@
 from os import chdir, listdir
 from threading import Thread
-from subprocess import PIPE,Popen,run
+from subprocess import PIPE, Popen, run
 from _task.path import _server_dir, _source_dir
 from _task.config import config
 
@@ -17,7 +17,7 @@ class TaskEntity:
                 cmd = "./mkfw.sh " + self.profile
                 cmd = cmd + " clean && " + cmd
                 self.shell_process = Popen(cmd, shell=True, bufsize=30, stdout=PIPE,
-                                                      stderr=PIPE)
+                                           stderr=PIPE)
                 self.shell_process.wait()
                 out, err = self.shell_process.communicate()
                 if self.shell_process.returncode == 0:
