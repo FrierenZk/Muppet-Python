@@ -1,4 +1,4 @@
-import json
+from json import dumps
 
 x = {
     "trunk": {
@@ -36,6 +36,6 @@ x = {
 }
 
 with open("build_list.json", 'w') as file:
-    data = json.dumps(x, indent=4, sort_keys=True)
+    data = dumps(x, indent=4, sort_keys=True)
     file.write(data)
     file.close()

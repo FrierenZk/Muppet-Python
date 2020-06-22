@@ -1,5 +1,4 @@
-import os
-
+from os.path import expanduser
 from _task.config import config
 
 server_dir = {
@@ -32,7 +31,7 @@ def _image_dir(task: str):
     name = config.get_name(task)
     if name is None:
         return None
-    return os.path.expanduser('~') + "/catv/" + t + "/" + name + "/"
+    return expanduser('~') + "/catv/" + t + "/" + name + "/"
 
 
 def _source_dir(task: str):

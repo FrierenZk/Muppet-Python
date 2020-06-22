@@ -1,6 +1,6 @@
-import json
-import os
-import shutil
+from json import dumps, load
+from shutil import move
+from os import remove
 from typing import Dict
 
 
@@ -20,7 +20,7 @@ class Config:
                 return
             else:
                 file.seek(0, 0)
-            data = json.load(file)
+            data = load(file)
             data: Dict
             file.close()
         for k, v in data.items():
@@ -50,13 +50,13 @@ class Config:
                     v.pop("type")
                     print(v)
                     data[_type][k] = v
-                string = json.dumps(data, indent=4, sort_keys=True)
+                string = dumps(data, indent=4, sort_keys=True)
                 file.write(string)
                 file.close()
-                shutil.move(self._list_file + ".tmp", self._list_file)
+                move(self._list_file + ".tmp", self._list_file)
         except IOError as err:
             print("config", err)
-            os.remove(self._list_file + ".tmp")
+            remove(self._list_file + ".tmp")
         except LookupError as err:
             print("config", err)
         finally:

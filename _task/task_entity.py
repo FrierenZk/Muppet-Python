@@ -1,23 +1,23 @@
-import os
-import subprocess
-import threading
+from os import chdir, listdir
+from threading import Thread
+from subprocess import PIPE,Popen,run
 from _task.path import _server_dir, _source_dir
 from _task.config import config
 
 
 class TaskEntity:
-    class TaskThread(threading.Thread):
-        shell_process: subprocess.Popen = None
+    class TaskThread(Thread):
+        shell_process: Popen = None
 
         def run(self) -> None:
             try:
-                os.chdir(_source_dir(self.task))
-                ret = subprocess.run("svn up", shell=True)
+                chdir(_source_dir(self.task))
+                ret = run("svn up", shell=True)
                 print("task=" + self.task, "svn up", ret)
                 cmd = "./mkfw.sh " + self.profile
                 cmd = cmd + " clean && " + cmd
-                self.shell_process = subprocess.Popen(cmd, shell=True, bufsize=30, stdout=subprocess.PIPE,
-                                                      stderr=subprocess.PIPE)
+                self.shell_process = Popen(cmd, shell=True, bufsize=30, stdout=PIPE,
+                                                      stderr=PIPE)
                 self.shell_process.wait()
                 out, err = self.shell_process.communicate()
                 if self.shell_process.returncode == 0:
@@ -39,7 +39,7 @@ class TaskEntity:
 
         def _upload_image(self):
             file_path = ""
-            files = os.listdir(self.image_dir)
+            files = listdir(self.image_dir)
             for file in files:
                 if file.find(".tar.gz") == -1:
                     continue
@@ -47,7 +47,7 @@ class TaskEntity:
                 break
 
             if file_path is not None:
-                ret = subprocess.run(
+                ret = run(
                     "sudo sshpass -p 654321 scp " + file_path + " buildmanager@" + _server_dir(self.task))
                 if ret.returncode == 0:
                     print("task=" + self.task, "upload success")
