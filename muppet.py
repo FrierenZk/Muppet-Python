@@ -4,13 +4,14 @@ import threading
 from multiprocessing import cpu_count
 from typing import Dict, Deque
 from time import sleep
+from collections import deque
 
 from _task.task_entity import TaskEntity
 
 
 class Muppet:
-    task_list_waiting: Deque[TaskEntity] = []
-    task_list: Dict[str, TaskEntity] = []
+    task_list_waiting: Deque[TaskEntity] = deque()
+    task_list: Dict[str, TaskEntity] = {}
 
     class TaskCheck(threading.Thread):
         status: bool = True
@@ -38,8 +39,8 @@ class Muppet:
                 file = open("tasks.txt", 'r')
                 line = file.readline()
                 i = line.find("execute ")
-                if i > 0:
-                    task = line[i + len("execute ") + 1:].strip().replace('\n', '').replace('\r', '')
+                if i >= 0:
+                    task = line[i + len("execute "):].strip().replace('\n', '').replace('\r', '')
                 else:
                     return
                 t = open("tasks.txt.tmp", 'w')
@@ -48,16 +49,17 @@ class Muppet:
                 t.close()
                 shutil.move("tasks.txt.tmp", "tasks.txt")
                 tasks.append(TaskEntity(task))
-            except IOError:
+            except IOError as err:
+                print("muppet", err)
                 os.remove("tasks.txt.tmp")
-            except LookupError:
+            except LookupError as err:
+                print("muppet", err)
+            finally:
                 return
 
-    task_check: TaskCheck
-
     def __init__(self):
-        self.task_check.start()
         self.task_check = self.TaskCheck(self)
+        self.task_check.start()
 
     def run(self):
         while True:
