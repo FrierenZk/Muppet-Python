@@ -7,30 +7,35 @@ from _task.config import config
 
 class TaskEntity:
     class TaskThread(threading.Thread):
-        shell_process: subprocess.Popen
+        shell_process: subprocess.Popen = None
 
         def run(self) -> None:
-            os.chdir(_source_dir(self.task))
-            ret = subprocess.run("svn up")
-            print("task=" + self.task, "svn up", ret)
-            cmd = "./mkfw.sh " + self.profile
-            cmd = cmd + " clean && " + cmd
-            self.shell_process = subprocess.Popen(cmd, bufsize=30, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            self.shell_process.wait()
-            out, err = self.shell_process.communicate()
-            if self.shell_process.returncode == 0:
-                print(cmd, "success")
-                self._upload_image()
-            else:
-                print("task=" + self.task, "cmd failed")
-                print(out)
-                print(err)
+            try:
+                os.chdir(_source_dir(self.task))
+                ret = subprocess.run("svn up", shell=True)
+                print("task=" + self.task, "svn up", ret)
+                cmd = "./mkfw.sh " + self.profile
+                cmd = cmd + " clean && " + cmd
+                self.shell_process = subprocess.Popen(cmd, shell=True, bufsize=30, stdout=subprocess.PIPE,
+                                                      stderr=subprocess.PIPE)
+                self.shell_process.wait()
+                out, err = self.shell_process.communicate()
+                if self.shell_process.returncode == 0:
+                    print(cmd, "success")
+                    self._upload_image()
+                else:
+                    print("task=" + self.task, "cmd=" + cmd, "cmd failed")
+                    print(out)
+                    print(err)
+            finally:
+                self._callback(self.task)
 
-        def __init__(self, task: str, profile: str):
+        def __init__(self, task: str, profile: str, callback):
             super().__init__()
             self.task = task
             self.profile = profile
             self.image_dir = _source_dir(task)
+            self._callback = callback
 
         def _upload_image(self):
             file_path = ""
@@ -54,17 +59,19 @@ class TaskEntity:
     valid = False
     _task: TaskThread = None
 
-    def __init__(self, task: str):
+    def __init__(self, task: str, callback):
         self.task = task
         self._profile = config.get_profile(task)
+        self._callback = callback
         if (task is not None) & (self._profile is not None):
             self.valid = True
 
     def run(self):
         if self.valid:
-            self._task = self.TaskThread(self.task, self._profile)
+            self._task = self.TaskThread(self.task, self._profile, self._callback)
             self._task.start()
         else:
+            self._callback(self.task)
             print("task invalid", "task=" + self.task, "profile=" + self._profile)
 
     def terminate(self):

@@ -36,19 +36,21 @@ class Muppet:
                 file = open("tasks.txt", 'w')
                 file.close()
             try:
+                flag = False
                 file = open("tasks.txt", 'r')
-                line = file.readline()
-                i = line.find("execute ")
-                if i >= 0:
-                    task = line[i + len("execute "):].strip().replace('\n', '').replace('\r', '')
-                else:
-                    return
-                t = open("tasks.txt.tmp", 'w')
-                t.writelines(file.readlines())
+                lines = file.readlines()
+                for line in lines:
+                    i = line.find("execute ")
+                    if i >= 0:
+                        task = line[i + len("execute "):].strip().replace('\n', '').replace('\r', '')
+                        tasks.append(TaskEntity(task, self.m.callback))
+                        flag = True
+                    else:
+                        continue
                 file.close()
-                t.close()
-                shutil.move("tasks.txt.tmp", "tasks.txt")
-                tasks.append(TaskEntity(task))
+                if flag:
+                    file = open("tasks.txt", 'w')
+                    file.close()
             except IOError as err:
                 print("muppet", err)
                 os.remove("tasks.txt.tmp")
@@ -61,6 +63,10 @@ class Muppet:
         self.task_check = self.TaskCheck(self)
         self.task_check.start()
 
+    def callback(self, task):
+        self.task_list.pop(task)
+        print("muppet callback")
+
     def run(self):
         while True:
             while len(self.task_list) < (cpu_count() / 2 - 1 if cpu_count() / 2 - 1 > 0 else 1):
@@ -70,6 +76,8 @@ class Muppet:
                     self.task_list[i.task].run()
                 else:
                     break
+            print("working list count = " + str(len(self.task_list)))
+            print("waiting list count = " + str(len(self.task_list_waiting)))
             sleep(10)
 
     def __del__(self):
