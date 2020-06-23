@@ -17,15 +17,15 @@ class Muppet:
 
         def __init__(self, m):
             super().__init__()
+            self.m = m
+
+        def run(self) -> None:
             try:
                 file = open("tasks.txt", 'r')
                 file.close()
             except IOError:
                 file = open("tasks.txt", 'w')
                 file.close()
-            self.m = m
-
-        def run(self) -> None:
             while self.status:
                 self._check_file()
                 sleep(60)
@@ -64,14 +64,40 @@ class Muppet:
                 ret, task = self.m.add_task_to_waiting(line)
                 if ret:
                     print("add task", task, "success")
+                elif line.find("task check"):
+                    if line.find("on"):
+                        self.m.init_task_check()
+                    elif line.find("off"):
+                        self.m.terminate_task_check()
+                    else:
+                        print("error task check command")
                 else:
                     print("error command")
 
+    task_check: TaskCheck = None
+    input: InputThread
+
     def __init__(self):
-        self.task_check = self.TaskCheck(self)
-        self.task_check.start()
+        self.init_task_check()
+        self.init_input()
+
+    def init_task_check(self):
+        if self.task_check is None:
+            self.task_check = self.TaskCheck(self)
+            self.task_check.start()
+
+    def init_input(self):
         self.input = self.InputThread(self)
         self.input.start()
+
+    def terminate_task_check(self):
+        self.task_check.status = False
+        try:
+            self.task_check.join(60)
+        except TimeoutError:
+            print("can not terminate task check normally")
+        finally:
+            self.task_check = None
 
     def callback(self, task):
         self.task_list.pop(task)
