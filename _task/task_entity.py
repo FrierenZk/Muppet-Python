@@ -55,13 +55,18 @@ class TaskEntity:
                     print("task=" + self.task, "upload success")
                 else:
                     print("task=" + self.task, "upload fail", ret)
+            else:
+                print("image not exist")
 
         def _image_clean(self):
             print("image cleaning at ", self.image_dir)
-            files = listdir(self.image_dir)
-            for file in files:
-                print(join(self.image_dir, file))
-                # remove(join(self.image_dir, file))
+            try:
+                files = listdir(self.image_dir)
+                for file in files:
+                    print(join(self.image_dir, file))
+                    # remove(join(self.image_dir, file))
+            except Exception as err:
+                print(err)
 
     task: str
     _profile: str
