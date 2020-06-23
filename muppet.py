@@ -40,7 +40,8 @@ class Muppet:
                 lines = file.readlines()
                 file.close()
                 for line in lines:
-                    flag |= self.m.add_task_to_waiting(line)
+                    t, _ = self.m.add_task_to_waiting(line)
+                    flag |= t
                 if flag:
                     file = open("tasks.txt", 'w')
                     file.close()
@@ -58,6 +59,8 @@ class Muppet:
 
         def run(self) -> None:
             for line in stdin:
+                if len(line.strip('\n').strip('\r').strip()) < 8:
+                    continue
                 ret, task = self.m.add_task_to_waiting(line)
                 if ret:
                     print("add task", task, "success")
@@ -94,7 +97,7 @@ class Muppet:
             task = line[i + len("execute "):].strip().replace('\n', '').replace('\r', '')
             self.task_list_waiting.append(TaskEntity(task, self.callback))
             return True, task
-        return False
+        return False, None
 
     def __del__(self):
         self.task_check.status = False
