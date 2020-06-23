@@ -35,7 +35,7 @@ def _work_dir(task: str):
 
 
 def _image_dir(task: str):
-    return _source_dir(task) + "/Project/images/"
+    return _source_dir(task) + "Project/images/"
 
 
 def _source_dir(task: str):

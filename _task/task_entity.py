@@ -64,7 +64,7 @@ class TaskEntity:
                 files = listdir(self.image_dir)
                 for file in files:
                     print(join(self.image_dir, file))
-                    # remove(join(self.image_dir, file))
+                    remove(join(self.image_dir, file))
             except Exception as err:
                 print(err)
 
