@@ -53,12 +53,16 @@ class Muppet:
                 return
 
     class InputThread(Thread):
+        status: bool = True
+
         def __init__(self, m):
             super().__init__()
             self.m = m
 
         def run(self) -> None:
             for line in stdin:
+                if not self.status:
+                    break
                 if len(line.strip('\n').strip('\r').strip()) < 8:
                     continue
                 ret, task = self.m.add_task_to_waiting(line)
@@ -69,13 +73,15 @@ class Muppet:
                         self.m.init_task_check()
                     elif line.find("off") >= 0:
                         self.m.terminate_task_check()
+                    elif line.lower().find("exit()") >= 0:
+                        self.m.exit()
                     else:
                         print("error task check command")
                 else:
                     print("error command")
 
     task_check: TaskCheck = None
-    input: InputThread
+    input: InputThread = None
 
     def __init__(self):
         self.init_task_check()
@@ -85,11 +91,15 @@ class Muppet:
         if self.task_check is None:
             self.task_check = self.TaskCheck(self)
             self.task_check.start()
+            print("task check thread on")
 
     def init_input(self):
-        self.input = self.InputThread(self)
-        self.input.start()
+        if self.input is None:
+            self.input = self.InputThread(self)
+            self.input.start()
+            print("input listener on")
 
+    # noinspection PyTypeChecker
     def terminate_task_check(self):
         self.task_check.status = False
         try:
@@ -98,6 +108,18 @@ class Muppet:
             print("can not terminate task check normally")
         finally:
             self.task_check = None
+            print("task check terminated")
+
+    # noinspection PyTypeChecker
+    def terminate_input(self):
+        self.input.status = False
+        try:
+            self.input.join(1)
+        except TimeoutError:
+            print("can not terminate input listener normally")
+        finally:
+            self.input = None
+            print("input listener terminated")
 
     def callback(self, task):
         self.task_list.pop(task)
@@ -124,6 +146,14 @@ class Muppet:
             self.task_list_waiting.append(TaskEntity(task, self.callback))
             return True, task
         return False, None
+
+    def exit(self):
+        print("exiting")
+        self.terminate_task_check()
+        print(".")
+        self.terminate_input()
+        print(".")
+        exit(0)
 
     def __del__(self):
         self.task_check.status = False
