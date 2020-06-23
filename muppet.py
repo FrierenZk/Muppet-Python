@@ -77,7 +77,7 @@ class Muppet:
                     else:
                         print("error task check command")
                 elif line.lower().find("exit()") >= 0:
-                    self.m.exit()
+                    Thread(target=self.m.exit).start()
                 else:
                     print("error command")
 
@@ -150,6 +150,7 @@ class Muppet:
         return False, None
 
     def exit(self):
+        sleep(1)
         print("exiting")
         self.terminate_task_check()
         print(".")
