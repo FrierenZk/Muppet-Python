@@ -1,5 +1,6 @@
 from os import chdir, listdir, remove
-from os.path import join
+from shutil import rmtree
+from os.path import join, isfile, isdir
 from threading import Thread
 from subprocess import PIPE, Popen, run
 from _task.path import _server_dir, _source_dir, _image_dir
@@ -63,8 +64,12 @@ class TaskEntity:
             try:
                 files = listdir(self.image_dir)
                 for file in files:
-                    print(join(self.image_dir, file))
-                    remove(join(self.image_dir, file))
+                    target = join(self.image_dir, file)
+                    print("delete ", target)
+                    if isfile(target):
+                        remove(join(self.image_dir, file))
+                    elif isdir(target):
+                        rmtree(target)
             except Exception as err:
                 print(err)
 
