@@ -115,7 +115,8 @@ class Muppet:
     def terminate_input(self):
         self.input.status = False
         try:
-            self.input.join(1)
+            if self.input.is_alive():
+                self.input.join(1)
         except TimeoutError:
             print("can not terminate input listener normally")
         finally:
@@ -156,6 +157,7 @@ class Muppet:
         print(".")
         self.status = False
         print(".")
+        exit(0)
 
     def __del__(self):
         self.task_check.status = False
