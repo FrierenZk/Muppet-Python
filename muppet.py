@@ -77,7 +77,7 @@ class Muppet:
                     else:
                         print("error task check command")
                 elif line.lower().find("exit()") >= 0:
-                    exit(0)
+                    self.m.exit()
                 else:
                     print("error command")
 
@@ -148,6 +148,11 @@ class Muppet:
             self.task_list_waiting.append(TaskEntity(task, self.callback))
             return True, task
         return False, None
+
+    def exit(self):
+        self.terminate_task_check()
+        self.input.status = False
+        self.status = False
 
     def __del__(self):
         self.task_check.status = False
