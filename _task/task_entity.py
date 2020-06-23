@@ -18,8 +18,8 @@ class TaskEntity:
                 cmd = cmd + " clean && " + cmd
                 self.shell_process = Popen(cmd, shell=True, bufsize=30, stdout=PIPE,
                                            stderr=PIPE)
-                self.shell_process.wait()
                 out, err = self.shell_process.communicate()
+                self.shell_process.wait()
                 if self.shell_process.returncode == 0:
                     print(cmd, "success")
                     self._upload_image()
