@@ -1,7 +1,8 @@
-from os import chdir, listdir
+from os import chdir, listdir, remove
+from os.path import join
 from threading import Thread
 from subprocess import PIPE, Popen, run
-from _task.path import _server_dir, _source_dir
+from _task.path import _server_dir, _source_dir, _image_dir
 from _task.config import config
 
 
@@ -16,6 +17,7 @@ class TaskEntity:
                 print("task=" + self.task, "svn up", ret)
                 cmd = "./mkfw.sh " + self.profile
                 cmd = cmd + " clean && " + cmd
+                self._image_clean()
                 self.shell_process = Popen(cmd, shell=True, bufsize=30, stdout=PIPE,
                                            stderr=PIPE)
                 out, err = self.shell_process.communicate()
@@ -34,7 +36,7 @@ class TaskEntity:
             super().__init__()
             self.task = task
             self.profile = profile
-            self.image_dir = _source_dir(task)
+            self.image_dir = _image_dir(task)
             self._callback = callback
 
         def _upload_image(self):
@@ -48,11 +50,18 @@ class TaskEntity:
 
             if file_path is not None:
                 ret = run(
-                    "sudo sshpass -p 654321 scp " + file_path + " buildmanager@" + _server_dir(self.task))
+                    "sudo sshpass -p 654321 scp " + file_path + " buildmanager@" + _server_dir(self.task), shell=True)
                 if ret.returncode == 0:
                     print("task=" + self.task, "upload success")
                 else:
                     print("task=" + self.task, "upload fail", ret)
+
+        def _image_clean(self):
+            print("image cleaning at ", self.image_dir)
+            files = listdir(self.image_dir)
+            for file in files:
+                print(join(self.image_dir, file))
+                # remove(join(self.image_dir, file))
 
     task: str
     _profile: str

@@ -22,7 +22,7 @@ def _server_dir(task: str):
     return ("172.18.36.250:/volume1/version/" + t + "/" + task + "/").strip()
 
 
-def _image_dir(task: str):
+def _work_dir(task: str):
     t = config.get_type(task)
     if t is None:
         return None
@@ -34,5 +34,17 @@ def _image_dir(task: str):
     return expanduser('~') + "/catv/" + t + "/" + name + "/"
 
 
+def _image_dir(task: str):
+    return _source_dir(task) + "/Project/images/"
+
+
 def _source_dir(task: str):
-    return _image_dir(task) + "catv-hgu-sfu-allinone/"
+    t = config.get_type(task)
+    if t is None:
+        return None
+    if t in type_dir.keys():
+        t = type_dir[t]
+    name = config.get_name(task)
+    if name is None:
+        return None
+    return expanduser('~') + "/catv/" + t + "/" + name + "/catv-hgu-sfu-allinone/"
