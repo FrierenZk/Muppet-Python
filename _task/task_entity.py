@@ -48,7 +48,7 @@ class TaskEntity:
                 file_path = self.image_dir + file
                 break
 
-            if file_path is not None:
+            if file_path is not "":
                 ret = run(
                     "sudo sshpass -p 654321 scp " + file_path + " buildmanager@" + _server_dir(self.task), shell=True)
                 if ret.returncode == 0:
