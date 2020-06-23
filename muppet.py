@@ -63,7 +63,7 @@ class Muppet:
             for line in stdin:
                 if not self.status:
                     break
-                if len(line.strip('\n').strip('\r').strip()) < 8:
+                if len(line.strip('\n').strip('\r').strip()) < 6:
                     continue
                 ret, task = self.m.add_task_to_waiting(line)
                 if ret:
@@ -73,10 +73,10 @@ class Muppet:
                         self.m.init_task_check()
                     elif line.find("off") >= 0:
                         self.m.terminate_task_check()
-                    elif line.lower().find("exit()") >= 0:
-                        self.m.exit()
                     else:
                         print("error task check command")
+                elif line.lower().find("exit()") >= 0:
+                    self.m.exit()
                 else:
                     print("error command")
 
