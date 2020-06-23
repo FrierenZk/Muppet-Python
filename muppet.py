@@ -64,10 +64,10 @@ class Muppet:
                 ret, task = self.m.add_task_to_waiting(line)
                 if ret:
                     print("add task", task, "success")
-                elif line.find("task check"):
-                    if line.find("on"):
+                elif line.find("task check") >= 0:
+                    if line.find("on") >= 0:
                         self.m.init_task_check()
-                    elif line.find("off"):
+                    elif line.find("off") >= 0:
                         self.m.terminate_task_check()
                     else:
                         print("error task check command")
