@@ -1,6 +1,6 @@
 from os import chdir, listdir, remove
 from shutil import rmtree
-from os.path import join, isfile, isdir
+from os.path import join, isfile, isdir, getsize
 from threading import Thread
 from subprocess import PIPE, Popen, run
 from _task.path import _server_dir, _source_dir, _image_dir
@@ -48,8 +48,10 @@ class TaskEntity:
                     continue
                 file_path = self.image_dir + file
                 break
-
             if file_path is not "":
+                if getsize(file_path) < (1024 * 1024):
+                    print(file_path, "size is not right, upload canceled")
+                    return
                 ret = run(
                     "sudo sshpass -p 654321 scp " + file_path + " buildmanager@" + _server_dir(self.task), shell=True)
                 if ret.returncode == 0:

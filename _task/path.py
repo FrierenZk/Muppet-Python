@@ -19,7 +19,10 @@ def _server_dir(task: str):
         return None
     if t in server_dir.keys():
         t = server_dir[t]
-    return ("172.18.36.250:/volume1/version/" + t + "/" + task + "/").strip()
+    name = config.get_name(task)
+    if name is None:
+        return None
+    return ("172.18.36.250:/volume1/version/" + t + "/" + name + "/").strip()
 
 
 def _work_dir(task: str):
