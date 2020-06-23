@@ -157,3 +157,5 @@ class Muppet:
     def __del__(self):
         self.task_check.status = False
         self.task_check.join()
+        self.input.status = False
+        self.input.join()
