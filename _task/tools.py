@@ -21,6 +21,10 @@ x = {
         "sfustandard": {
             "name": "sfustandard",
             "profile": "catv_standard_nocolor_sfu_xpon_nowifi_nocable_novoice_nousb"
+        },
+        "yueqing": {
+            "name": "yueqing",
+            "profile": "catv_yueqing_nocolor_hgu_xpon_wifi_nocable_novoice_nousb"
         }
     },
     "tags": {
