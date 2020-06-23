@@ -3,6 +3,7 @@ from collections import deque
 from multiprocessing import cpu_count
 from time import sleep
 from typing import Dict, Deque
+from sys import stdin
 
 from _task.task_entity import TaskEntity
 
@@ -27,7 +28,7 @@ class Muppet:
         def run(self) -> None:
             while self.status:
                 self._check_file()
-                sleep(5)
+                sleep(60)
 
         def _check_file(self):
             tasks: Deque[TaskEntity] = self.m.task_list_waiting
@@ -39,13 +40,7 @@ class Muppet:
                 lines = file.readlines()
                 file.close()
                 for line in lines:
-                    i = line.find("execute ")
-                    if i >= 0:
-                        task = line[i + len("execute "):].strip().replace('\n', '').replace('\r', '')
-                        tasks.append(TaskEntity(task, self.m.callback))
-                        flag = True
-                    else:
-                        continue
+                    flag |= self.m.add_task_to_waiting(line)
                 if flag:
                     file = open("tasks.txt", 'w')
                     file.close()
@@ -56,9 +51,24 @@ class Muppet:
             finally:
                 return
 
+    class InputThread(Thread):
+        def __init__(self, m):
+            super().__init__()
+            self.m = m
+
+        def run(self) -> None:
+            for line in stdin:
+                ret, task = self.m.add_task_to_waiting(line)
+                if ret:
+                    print("add task", task, "success")
+                else:
+                    print("error command")
+
     def __init__(self):
         self.task_check = self.TaskCheck(self)
         self.task_check.start()
+        self.input = self.InputThread(self)
+        self.input.start()
 
     def callback(self, task):
         self.task_list.pop(task)
@@ -77,6 +87,14 @@ class Muppet:
                 else:
                     break
             sleep(10)
+
+    def add_task_to_waiting(self, line: str):
+        i = line.find("execute ")
+        if i >= 0:
+            task = line[i + len("execute "):].strip().replace('\n', '').replace('\r', '')
+            self.task_list_waiting.append(TaskEntity(task, self.callback))
+            return True, task
+        return False
 
     def __del__(self):
         self.task_check.status = False
