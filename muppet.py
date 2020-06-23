@@ -16,6 +16,12 @@ class Muppet:
 
         def __init__(self, m):
             super().__init__()
+            try:
+                file = open("tasks.txt", 'r')
+                file.close()
+            except IOError:
+                file = open("tasks.txt", 'w')
+                file.close()
             self.m = m
 
         def run(self) -> None:
@@ -28,15 +34,10 @@ class Muppet:
             if len(tasks) > 2:
                 return
             try:
-                file = open("tasks.txt", 'r')
-                file.close()
-            except IOError:
-                file = open("tasks.txt", 'w')
-                file.close()
-            try:
                 flag = False
                 file = open("tasks.txt", 'r')
                 lines = file.readlines()
+                file.close()
                 for line in lines:
                     i = line.find("execute ")
                     if i >= 0:
@@ -45,7 +46,6 @@ class Muppet:
                         flag = True
                     else:
                         continue
-                file.close()
                 if flag:
                     file = open("tasks.txt", 'w')
                     file.close()
