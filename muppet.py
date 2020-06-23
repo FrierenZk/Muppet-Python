@@ -69,8 +69,11 @@ class Muppet:
             while len(self.task_list) < (cpu_count() / 2 - 1 if cpu_count() / 2 - 1 > 0 else 1):
                 if len(self.task_list_waiting) > 0:
                     i = self.task_list_waiting.popleft()
-                    self.task_list[i.task] = i
-                    self.task_list[i.task].run()
+                    if i.task not in self.task_list.keys():
+                        self.task_list[i.task] = i
+                        self.task_list[i.task].run()
+                    else:
+                        print("duplicated tasks error", i.task)
                 else:
                     break
             sleep(10)
