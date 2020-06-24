@@ -86,5 +86,11 @@ class Config:
                 return self.build_list[task][value]
         return None
 
+    def get_update(self, task: str):
+        if task in self.build_list:
+            if 'svn_update' in self.build_list[task]:
+                return self.build_list[task]['svn_update']
+        return True
+
 
 config = Config()

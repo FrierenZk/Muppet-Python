@@ -15,8 +15,11 @@ class TaskEntity:
         def run(self) -> None:
             try:
                 chdir(_source_dir(self.task))
-                ret = run("svn up", shell=True)
-                print("task=" + self.task, "svn up", ret)
+                if config.get_update(self.task) != False:
+                    ret = run("svn up", shell=True)
+                    print("task=" + self.task, "svn up", ret)
+                else:
+                    print("svn up skipped")
                 cmd = "./mkfw.sh " + self.profile
                 cmd = cmd + " clean && " + cmd
                 self._image_clean()
