@@ -35,6 +35,8 @@ class TaskEntity:
                     print("task=" + self.task, "cmd=" + cmd, "cmd failed")
                     print(out)
                     print(err)
+            except Exception as err:
+                print(self.task, err)
             finally:
                 self._callback(self.task)
 
@@ -53,7 +55,7 @@ class TaskEntity:
                     continue
                 file_path = self.image_dir + file
                 break
-            if file_path is not "":
+            if file_path != "":
                 if getsize(file_path) < (1024 * 1024):
                     print(file_path, "size is not right, upload canceled")
                     return
@@ -98,6 +100,10 @@ class TaskEntity:
             self._task.start()
         else:
             self._callback(self.task)
+            if self.task is None:
+                self.task = "None"
+            if self._profile is None:
+                self._profile = "None"
             print("task invalid", "task=" + self.task, "profile=" + self._profile)
 
     def terminate(self):
@@ -110,5 +116,7 @@ class TaskEntity:
 
     def __del__(self):
         if self._task is None:
+            return
+        if self._task.shell_process is None:
             return
         self._task.shell_process.kill()

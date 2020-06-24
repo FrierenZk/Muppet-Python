@@ -20,6 +20,8 @@ class Muppet:
     def __init__(self):
         self.init_task_check()
         self.init_input()
+        self.task_list_lock = Lock()
+        self.task_list_waiting_lock = Lock()
 
     def init_task_check(self):
         if self.task_check is None:
