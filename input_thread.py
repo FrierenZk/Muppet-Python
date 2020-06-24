@@ -18,7 +18,7 @@ class InputThread(Thread):
                 break
             if len(line.strip('\n').strip('\r').strip()) < 6:
                 continue
-            ret, task = self.m.add_task_to_waiting(line)
+            ret, task = self.m.add_task_to_waiting_line(line)
             if ret:
                 print("add task", task, "success")
             elif line.find("task check") >= 0:

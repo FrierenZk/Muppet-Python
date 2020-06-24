@@ -34,7 +34,7 @@ class TaskThread(Thread):
             lines = file.readlines()
             file.close()
             for line in lines:
-                t, _ = self.m.add_task_to_waiting(line)
+                t, _ = self.m.add_task_to_waiting_line(line)
                 flag |= t
             if flag:
                 file = open("tasks.txt", 'w')

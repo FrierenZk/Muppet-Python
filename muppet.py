@@ -82,15 +82,18 @@ class Muppet:
         print("muppet closing")
         self.__del__()
 
-    def add_task_to_waiting(self, line: str):
+    def add_task_to_waiting_line(self, line: str):
         i = line.find("execute ")
         if i >= 0:
             task = line[i + len("execute "):].strip('\n').strip('\r').strip()
-            self.task_list_waiting_lock.acquire()
-            self.task_list_waiting.append(TaskEntity(task, self.callback))
-            self.task_list_waiting_lock.release()
+            self.add_task_to_waiting(task)
             return True, task
         return False, None
+
+    def add_task_to_waiting(self, task: str):
+        self.task_list_waiting_lock.acquire()
+        self.task_list_waiting.append(TaskEntity(task, self.callback))
+        self.task_list_waiting_lock.release()
 
     def terminate_task(self, task: str):
         if task in self.task_list.keys():
