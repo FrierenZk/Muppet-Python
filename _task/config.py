@@ -94,3 +94,9 @@ class Config:
 
 
 config = Config()
+
+
+def config_reload():
+    global config
+    config = Config()
+    print("config reloaded")
