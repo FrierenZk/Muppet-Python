@@ -105,6 +105,7 @@ class TaskEntity:
             return
         if self._task.shell_process.poll() is None:
             self._task.shell_process.terminate()
+        print("task", self.task, "terminated")
         return
 
     def __del__(self):

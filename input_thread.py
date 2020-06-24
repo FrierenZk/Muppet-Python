@@ -32,5 +32,8 @@ class InputThread(Thread):
                 self.m.exit()
             elif line.lower().find("config reload") >= 0:
                 config_reload()
+            elif line.find("terminate ") >= 0:
+                i = line.find("terminate ") + len("terminate ")
+                self.m.terminate_task(line[i:].strip('\n').strip('\r').strip())
             else:
                 print("error command")

@@ -85,12 +85,19 @@ class Muppet:
     def add_task_to_waiting(self, line: str):
         i = line.find("execute ")
         if i >= 0:
-            task = line[i + len("execute "):].strip().replace('\n', '').replace('\r', '')
+            task = line[i + len("execute "):].strip('\n').strip('\r').strip()
             self.task_list_waiting_lock.acquire()
             self.task_list_waiting.append(TaskEntity(task, self.callback))
             self.task_list_waiting_lock.release()
             return True, task
         return False, None
+
+    def terminate_task(self, task: str):
+        if task in self.task_list.keys():
+            print("task", task, "stopping")
+            Thread(target=self.task_list[task].terminate).start()
+        else:
+            print("can't find task", task)
 
     def exit(self):
         self.status = False
