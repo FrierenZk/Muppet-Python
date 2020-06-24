@@ -23,6 +23,7 @@ class TaskEntity:
                 cmd = "./mkfw.sh " + self.profile
                 cmd = cmd + " clean && " + cmd
                 self._image_clean()
+                print("making compilation...")
                 self.shell_process = Popen(cmd, shell=True, bufsize=30, stdout=PIPE,
                                            stderr=PIPE)
                 out, err = self.shell_process.communicate()
