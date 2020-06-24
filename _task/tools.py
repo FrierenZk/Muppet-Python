@@ -34,6 +34,10 @@ x = {
         "jingning": {
             "name": "jingning",
             "profile": "catv_jingning_white_sfu_epon_nowifi_cable_novoice_nousb"
+        },
+        "huashusfu": {
+            "name": "huashusfu",
+            "profile": "catv_huashu_nocolor_sfu_xpon_nowifi_cable_novoice_nousb"
         }
     },
     "tags": {
