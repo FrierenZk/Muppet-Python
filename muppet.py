@@ -5,12 +5,14 @@ from typing import Dict, Deque
 from _task.task_entity import TaskEntity
 from input_thread import InputThread
 from task_thread import TaskThread
-from threading import Thread
+from threading import Thread, Lock
 
 
 class Muppet:
     task_list_waiting: Deque[TaskEntity] = deque()
+    task_list_waiting_lock: Lock
     task_list: Dict[str, TaskEntity] = {}
+    task_list_lock: Lock
     status = True
     task_check: TaskThread = None
     input: InputThread = None
@@ -55,16 +57,22 @@ class Muppet:
             print("input listener terminated")
 
     def callback(self, task):
+        self.task_list_lock.acquire()
         self.task_list.pop(task)
+        self.task_list_lock.release()
         print(task, "finished")
 
     def run(self):
         while self.status:
             while len(self.task_list) < (cpu_count() / 2 - 1 if cpu_count() / 2 - 1 > 0 else 1):
                 if len(self.task_list_waiting) > 0:
+                    self.task_list_waiting_lock.acquire()
                     i = self.task_list_waiting.popleft()
+                    self.task_list_waiting_lock.release()
                     if i.task not in self.task_list.keys():
+                        self.task_list_lock.acquire()
                         self.task_list[i.task] = i
+                        self.task_list_lock.release()
                         self.task_list[i.task].run()
                     else:
                         print("duplicated tasks error", i.task)
@@ -78,7 +86,9 @@ class Muppet:
         i = line.find("execute ")
         if i >= 0:
             task = line[i + len("execute "):].strip().replace('\n', '').replace('\r', '')
+            self.task_list_waiting_lock.acquire()
             self.task_list_waiting.append(TaskEntity(task, self.callback))
+            self.task_list_waiting_lock.release()
             return True, task
         return False, None
 
