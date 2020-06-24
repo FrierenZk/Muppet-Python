@@ -27,12 +27,12 @@ x = {
             "profile": "catv_yueqing_nocolor_hgu_xpon_wifi_nocable_novoice_nousb"
         },
         "jingning977": {
-            "name": "jingning",
+            "name": "jingning977",
             "profile": "catv_jingning_white_sfu_epon_nowifi_cable_novoice_nousb",
             "svn_update": False
         },
         "jingning": {
-            "name": "jingning1",
+            "name": "jingning",
             "profile": "catv_jingning_white_sfu_epon_nowifi_cable_novoice_nousb"
         }
     },
