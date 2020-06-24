@@ -1,10 +1,11 @@
 from os import chdir, listdir, remove
-from shutil import rmtree
 from os.path import join, isfile, isdir, getsize
-from threading import Thread
+from shutil import rmtree
 from subprocess import PIPE, Popen, run
-from _task.path import _server_dir, _source_dir, _image_dir
+from threading import Thread
+
 from _task.config import config
+from _task.path import _server_dir, _source_dir, _image_dir
 
 
 class TaskEntity:
