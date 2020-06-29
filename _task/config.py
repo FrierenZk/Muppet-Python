@@ -92,6 +92,12 @@ class Config:
                 return self.build_list[task]['svn_update']
         return True
 
+    def get_sources(self, task: str):
+        if task in self.build_list:
+            if 'sources' in self.build_list[task]:
+                return self.build_list[task]['sources']
+        return None
+
 
 config = Config()
 

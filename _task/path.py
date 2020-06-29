@@ -50,4 +50,7 @@ def _source_dir(task: str):
     name = config.get_name(task)
     if name is None:
         return None
-    return expanduser('~') + "/catv/" + t + "/" + name + "/catv-hgu-sfu-allinone/"
+    sources = config.get_sources(task)
+    if sources is None:
+        sources = "catv-hgu-sfu-allinone"
+    return expanduser('~') + "/catv/" + t + "/" + name + "/" + sources + "/"

@@ -48,11 +48,22 @@ x = {
         "guangxi": {
             "name": "guangxi-1.0",
             "profile": "catv_guangxi_nocolor_hgu_xpon_wifi_cable_voice_usb"
+        },
+        "hunan": {
+            "name": "hunan-3.0",
+            "profile": "catv_hunan_nocolor_hgu_xpon_wifi_cable_voice_nousb"
+        }
+    },
+    "7528": {
+        "7528-sfu": {
+            "name": "catv_general_black_sfu_gpon_nowifi_cable_novoice_nousb",
+            "profile": "catv_general_black_sfu_gpon_nowifi_cable_novoice_nousb",
+            "sources": "MTK-7528-SFU"
         }
     }
 }
 
-with open("build_list.json", 'w') as file:
+with open("_task/build_list.json", 'w') as file:
     data = dumps(x, indent=4, sort_keys=True)
     file.write(data)
     file.close()
