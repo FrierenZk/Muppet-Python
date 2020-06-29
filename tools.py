@@ -63,7 +63,7 @@ x = {
     }
 }
 
-with open("_task/build_list.json", 'w') as file:
+with open("build_list.json", 'w') as file:
     data = dumps(x, indent=4, sort_keys=True)
     file.write(data)
     file.close()
