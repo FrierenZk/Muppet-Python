@@ -27,12 +27,14 @@ class Muppet:
         if self.task_check is None:
             self.task_check = TaskThread(self)
             self.task_check.start()
+            self.task_check.daemon = True
             print("task check thread on")
 
     def init_input(self):
         if self.input is None:
             self.input = InputThread(self)
             self.input.start()
+            self.input.daemon = True
             print("input listener on")
 
     # noinspection PyTypeChecker
