@@ -30,7 +30,10 @@ class TaskEntity:
                 self.shell_process.wait()
                 if self.shell_process.returncode == 0:
                     print(cmd, "success")
-                    self._upload_image()
+                    if config.get_upload(self.task):
+                        self._upload_image()
+                    else:
+                        print(self.task, "finished with no uploaded")
                 else:
                     print("task=" + self.task, "cmd=" + cmd, "cmd failed")
                     print(out)

@@ -98,6 +98,12 @@ class Config:
                 return self.build_list[task]['sources']
         return None
 
+    def get_upload(self, task: str):
+        if task in self.build_list:
+            if 'upload' in self.build_list[task]:
+                return self.build_list[task]['upload']
+        return True
+
 
 config = Config()
 
