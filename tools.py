@@ -38,6 +38,14 @@ x = {
         "huashusfu": {
             "name": "huashusfu",
             "profile": "catv_huashu_nocolor_sfu_xpon_nowifi_cable_novoice_nousb"
+        },
+        "shaoxing": {
+            "name": "shaoxing",
+            "profile": "catv_shaoxing_nocolor_sfu_xpon_nowifi_cable_novoice_nousb"
+        },
+        "hunan": {
+            "name": "hunan",
+            "profile": "catv_hunan_nocolor_hgu_xpon_wifi_cable_voice_nousb"
         }
     },
     "tags": {
@@ -49,7 +57,7 @@ x = {
             "name": "guangxi-1.0",
             "profile": "catv_guangxi_nocolor_hgu_xpon_wifi_cable_voice_usb"
         },
-        "hunan": {
+        "hunan3.0": {
             "name": "hunan-3.0",
             "profile": "catv_hunan_nocolor_hgu_xpon_wifi_cable_voice_nousb"
         }
@@ -59,6 +67,19 @@ x = {
             "name": "catv_general_black_sfu_gpon_nowifi_cable_novoice_nousb",
             "profile": "catv_general_black_sfu_gpon_nowifi_cable_novoice_nousb",
             "sources": "MTK-7528-SFU"
+        }
+    },
+    "7580": {
+        "7580": {
+            "name": "MTK-7580",
+            "profile": "CUC_en7580_7592_7615_OSGI_demo",
+            "sources": "."
+        }
+    },
+    "wifi6": {
+        "wifi6": {
+            "name": ".",
+            "profile": "CT_EN7561D_LE_7915D_AP_demo"
         }
     }
 }
