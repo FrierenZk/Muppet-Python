@@ -18,7 +18,7 @@ class TaskEntity:
                 if config.get_update(self.task) != False:
                     if config.get_cleanup(self.task):
                         cmd = "svn cleanup "
-                        if config.get_cleanupSudo():
+                        if config.get_cleanupSudo(self.task):
                             cmd = "Sudo "+cmd
                         ret = run(cmd + config.get_cleanupPath(self.task), shell=True)
                         print("task=" + self.task, "svn cleanup", ret)
