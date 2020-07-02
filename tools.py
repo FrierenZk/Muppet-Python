@@ -81,6 +81,7 @@ x = {
             "name": ".",
             "profile": "CT_EN7561D_LE_7915D_AP_demo",
             "cleanup": True,
+            "cleanupSudo": True,
             "cleanupPath": "../"
         }
     }
