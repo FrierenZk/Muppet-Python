@@ -104,6 +104,18 @@ class Config:
                 return self.build_list[task]['upload']
         return True
 
+    def get_cleanup(self, task: str):
+        if task in self.build_list:
+            if 'cleanup' in self.build_list[task]:
+                return self.build_list[task]['cleanup']
+        return False
+
+    def get_cleanupPath(self, task: str):
+        if task in self.build_list:
+            if 'cleanupPath' in self.build_list[task]:
+                return self.build_list[task]['cleanupPath']
+        return ''
+
 
 config = Config()
 

@@ -16,6 +16,9 @@ class TaskEntity:
             try:
                 chdir(_source_dir(self.task))
                 if config.get_update(self.task) != False:
+                    if config.get_cleanup(self.task):
+                        ret = run("svn cleanup " + config.get_cleanupPath(self.task), shell=True)
+                        print("task=" + self.task, "svn cleanup", ret)
                     ret = run("svn up", shell=True)
                     print("task=" + self.task, "svn up", ret)
                 else:

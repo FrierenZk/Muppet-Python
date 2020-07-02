@@ -79,7 +79,9 @@ x = {
     "wifi6": {
         "wifi6": {
             "name": ".",
-            "profile": "CT_EN7561D_LE_7915D_AP_demo"
+            "profile": "CT_EN7561D_LE_7915D_AP_demo",
+            "cleanup": True,
+            "cleanupPath": "../"
         }
     }
 }
