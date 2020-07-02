@@ -110,9 +110,9 @@ class Config:
                 return self.build_list[task]['cleanup']
         return False
 
-    def get_cleanupSudo(self,task:str):
+    def get_cleanupSudo(self, task: str):
         if task in self.build_list:
-            if 'cleanupSudo'in self.build_list[task]:
+            if 'cleanupSudo' in self.build_list[task]:
                 return self.build_list[task]['cleanupSudo']
         return False
 
