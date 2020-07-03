@@ -19,7 +19,11 @@ def _server_dir(task: str):
         return None
     if t in server_dir.keys():
         t = server_dir[t]
-    name = config.get_name(task)
+    uploadPath = config.get_uploadPath()
+    if uploadPath is None:
+        name = config.get_name(task)
+    else:
+        name = uploadPath
     if name is None:
         return None
     return ("172.18.36.250:/volume1/version/" + t + "/" + name + "/").strip()

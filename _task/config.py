@@ -122,6 +122,12 @@ class Config:
                 return self.build_list[task]['cleanupPath']
         return ''
 
+    def get_uploadPath(self, task: str):
+        if task in self.build_list:
+            if 'uploadPath' in self.build_list[task]:
+                return self.build_list[task]['uploadPath']
+        return None
+
 
 config = Config()
 
