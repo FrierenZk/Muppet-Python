@@ -2,14 +2,14 @@ from os import chdir, listdir, remove
 from os.path import join, isfile, isdir, getsize
 from shutil import rmtree
 from subprocess import PIPE, Popen, run
-from threading import Thread
+from multiprocessing import Process
 
 from _task.config import config
 from _task.path import _server_dir, _source_dir, _image_dir
 
 
 class TaskEntity:
-    class TaskThread(Thread):
+    class TaskThread(Process):
         shell_process: Popen = None
 
         def run(self) -> None:
@@ -19,7 +19,7 @@ class TaskEntity:
                     if config.get_cleanup(self.task):
                         cmd = "svn cleanup "
                         if config.get_cleanupSudo(self.task):
-                            cmd = "sudo "+cmd
+                            cmd = "sudo " + cmd
                         ret = run(cmd + config.get_cleanupPath(self.task), shell=True)
                         print("task=" + self.task, "svn cleanup", ret)
                     ret = run("svn up", shell=True)
@@ -46,15 +46,17 @@ class TaskEntity:
                     print(err)
             except Exception as err:
                 print(self.task, err)
-            finally:
-                self._callback(self.task)
 
-        def __init__(self, task: str, profile: str, callback):
+        def __init__(self, task: str, profile: str):
             super().__init__()
             self.task = task
             self.profile = profile
             self.image_dir = _image_dir(task)
-            self._callback = callback
+
+        def __del__(self):
+            if self.shell_process is not None:
+                if self.shell_process.poll() is not None:
+                    self.shell_process.terminate()
 
         def _upload_image(self):
             file_path = ""
@@ -91,10 +93,23 @@ class TaskEntity:
             except Exception as err:
                 print(err)
 
+    class Task(Process):
+
+        def __init__(self, process: Process, task, callback):
+            super().__init__()
+            self.process = process
+            self.task = task
+            self._callback = callback
+
+        def run(self) -> None:
+            self.process.start()
+            self.process.join()
+            self._callback(self.task)
+
     task: str
     _profile: str
     valid = False
-    _task: TaskThread = None
+    _task: Task = None
 
     def __init__(self, task: str, callback):
         self.task = task
@@ -105,27 +120,20 @@ class TaskEntity:
 
     def run(self):
         if self.valid:
-            self._task = self.TaskThread(self.task, self._profile, self._callback)
+            self._task = self.Task(self.TaskThread(self.task, self._profile), self.task, self._callback)
             self._task.start()
         else:
-            self._callback(self.task)
             if self.task is None:
                 self.task = "None"
             if self._profile is None:
                 self._profile = "None"
             print("task invalid", "task=" + self.task, "profile=" + self._profile)
+            self._callback(self.task)
 
     def terminate(self):
         if self._task is None:
             return
-        if self._task.shell_process.poll() is None:
-            self._task.shell_process.terminate()
-        print("task", self.task, "terminated")
+        if self._task.process.is_alive():
+            self._task.process.terminate()
+            print("task", self.task, "terminated")
         return
-
-    def __del__(self):
-        if self._task is None:
-            return
-        if self._task.shell_process is None:
-            return
-        self._task.shell_process.kill()
