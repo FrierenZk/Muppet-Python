@@ -6,6 +6,7 @@ from _task.task_entity import TaskEntity
 from input_thread import InputThread
 from task_thread import TaskThread
 from threading import Thread, Lock
+from _task.config import config
 
 
 class Muppet:
@@ -74,10 +75,20 @@ class Muppet:
                     i = self.task_list_waiting.popleft()
                     self.task_list_waiting_lock.release()
                     if i.task not in self.task_list.keys():
-                        self.task_list_lock.acquire()
-                        self.task_list[i.task] = i
-                        self.task_list_lock.release()
-                        self.task_list[i.task].run()
+                        flag = True
+                        for j in self.task_list.keys():
+                            if config.get_name(i.task) == config.get_name(j):
+                                flag = False
+                                break
+                        if flag:
+                            self.task_list_lock.acquire()
+                            self.task_list[i.task] = i
+                            self.task_list_lock.release()
+                            self.task_list[i.task].run()
+                        else:
+                            self.task_list_waiting_lock.acquire()
+                            self.task_list_waiting.append(i)
+                            self.task_list_waiting_lock.release()
                     else:
                         print("duplicated tasks error", i.task)
                 else:
