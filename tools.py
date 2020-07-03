@@ -60,6 +60,10 @@ x = {
         "hunan3.0": {
             "name": "hunan-3.0",
             "profile": "catv_hunan_nocolor_hgu_xpon_wifi_cable_voice_nousb"
+        },
+        "mexico1.0": {
+            "name": "mexico-1.0",
+            "profile": "catv_mexicanos_nocolor_hgu_xpon_wifi_nocable_novoice_nousb"
         }
     },
     "7528": {
@@ -79,10 +83,22 @@ x = {
     "wifi6": {
         "wifi6": {
             "name": ".",
-            "profile": "CT_EN7561D_LE_7915D_AP_demo",
-            "cleanup": True,
-            "cleanupSudo": True,
-            "cleanupPath": "../"
+            "profile": "CT_EN7561D_LE_7915D_AP_demo"
+        }
+    },
+    "branches": {
+        "henan": {
+            "name": "FDT_henan",
+            "profile": "catv_henan_nocolor_sfu_xpon_nowifi_nocable_novoice_nousb"
+        },
+        "ecuador": {
+            "name": "FDT_ecuador",
+            "profile": "catv_ecuador_nocolor_hgu_xpon_wifi_cable_voice_usb"
+        },
+        "tvecuador": {
+            "name": "FDT_ecuador",
+            "profile": "catv_tvecuador_nocolor_hgu_xpon_wifi_cable_voice_usb",
+            "uploadPath": "FDT_ecuador"
         }
     }
 }
