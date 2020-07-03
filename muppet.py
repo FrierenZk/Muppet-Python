@@ -85,6 +85,7 @@ class Muppet:
                             self.task_list[i.task] = i
                             self.task_list_lock.release()
                             self.task_list[i.task].run()
+                            print(i.task, "running")
                         else:
                             self.task_list_waiting_lock.acquire()
                             self.task_list_waiting.append(i)
