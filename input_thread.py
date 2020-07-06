@@ -1,6 +1,5 @@
-from threading import Thread
 from sys import stdin
-from _task import config_reload
+from threading import Thread
 
 
 class InputThread(Thread):
@@ -30,8 +29,6 @@ class InputThread(Thread):
                     print("error task check command")
             elif line.lower().find("exit()") >= 0:
                 self.m.exit()
-            elif line.lower().find("config reload") >= 0:
-                config_reload()
             elif line.find("terminate ") >= 0:
                 i = line.find("terminate ") + len("terminate ")
                 self.m.terminate_task(line[i:].strip('\n').strip('\r').strip())
