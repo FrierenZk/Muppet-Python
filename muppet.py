@@ -33,7 +33,7 @@ class Muppet:
 
     def init_input(self):
         if self.input is None:
-            self.input = InputThread(self)
+            self.input = InputThread(m=self)
             self.input.daemon = True
             self.input.start()
             print("input listener on")
@@ -81,11 +81,11 @@ class Muppet:
                                 flag = False
                                 break
                         if flag:
+                            print(i.task, "running")
                             self.task_list_lock.acquire()
                             self.task_list[i.task] = i
                             self.task_list_lock.release()
                             self.task_list[i.task].run()
-                            print(i.task, "running")
                         else:
                             self.task_list_waiting_lock.acquire()
                             self.task_list_waiting.append(i)
@@ -120,7 +120,12 @@ class Muppet:
 
     def exit(self):
         self.status = False
+        self.task_list_lock.acquire()
+        for i, j in self.task_list.items():
+            j.terminate()
+        self.task_list_lock.release()
         print("exiting...")
+        exit(0)
 
     # noinspection PyTypeChecker
     def __del__(self):
