@@ -19,7 +19,7 @@ def _server_dir(task: str):
         return None
     if t in server_dir.keys():
         t = server_dir[t]
-    uploadPath = config.get_uploadPath()
+    uploadPath = config.get_uploadPath(task)
     if uploadPath is None:
         name = config.get_name(task)
     else:
