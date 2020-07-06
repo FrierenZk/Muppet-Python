@@ -64,6 +64,10 @@ x = {
         "mexico1.0": {
             "name": "mexico-1.0",
             "profile": "catv_mexicanos_nocolor_hgu_xpon_wifi_nocable_novoice_nousb"
+        },
+        "mexico2.0": {
+            "name": "mexico-2.0",
+            "profile": "catv_mexicanos_nocolor_hgu_xpon_wifi_nocable_novoice_nousb"
         }
     },
     "7528": {
@@ -94,11 +98,6 @@ x = {
         "ecuador": {
             "name": "FDT_ecuador",
             "profile": "catv_ecuador_nocolor_hgu_xpon_wifi_cable_voice_usb"
-        },
-        "tvecuador": {
-            "name": "FDT_ecuador",
-            "profile": "catv_tvecuador_nocolor_hgu_xpon_wifi_cable_voice_usb",
-            "uploadPath": "FDT_ecuador"
         }
     }
 }
