@@ -43,7 +43,7 @@ class Muppet(Process):
                         else:
                             self.task_list_waiting.put(i, block=True)
                     else:
-                        print("duplicated tasks error", i.task)
+                        print("duplicated tasks error", i)
         except EOFError:
             print("Muppet closing")
         finally:
