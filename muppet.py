@@ -1,4 +1,4 @@
-from multiprocessing import cpu_count, Process, Lock, Queue
+from multiprocessing import cpu_count, Process, Lock, Queue, Pool
 from typing import Dict
 
 from _task import config, TaskEntity
@@ -35,15 +35,15 @@ class Muppet(Process):
                                 flag = False
                                 break
                         if flag:
-                            print(i, "running")
+                            print("Task", i, "running")
                             self.task_list_lock.acquire()
                             self.task_list[i] = TaskEntity(i, self.callback_task_finish)
                             self.task_list_lock.release()
-                            self.task_list[i].run()
+                            self.task_list[i].start()
                         else:
                             self.task_list_waiting.put(i, block=True)
                     else:
-                        print("duplicated tasks error", i)
+                        print("Duplicated tasks error", i)
         except EOFError:
             print("Muppet closing")
         finally:
