@@ -22,11 +22,11 @@ class InputThread(Thread):
                 continue
             ret, task = self._callback_add_task(line=line)
             if ret:
-                print("add task", task, "success")
+                print("Add task", task, "success")
             elif line.lower().find("exit()") >= 0:
                 self._callback_exit()
             elif line.find("terminate ") >= 0:
                 i = line.find("terminate ") + len("terminate ")
                 self._callback_task_finish(task=line[i:].strip('\n').strip('\r').strip(), flag=False)
             else:
-                print("error command")
+                print("Error command")
