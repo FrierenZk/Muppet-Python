@@ -69,10 +69,12 @@ class Muppet(Process):
     def callback_task_finish(self, task, flag=True):
         self.task_list_lock.acquire()
         if task in self.task_list.keys():
-            self.task_list.pop(task)
             if flag is True:
+                self.task_list.pop(task)
                 print("Task:", task, "finished")
             else:
+                self.task_list[task].terminate()
+                self.task_list.pop(task)
                 print("Task", task, "terminated")
         else:
             print("Can not find target task:", task)
