@@ -1,4 +1,5 @@
 from multiprocessing import Process, Value
+from threading import Thread
 from os import chdir, remove, listdir
 from os.path import isfile, isdir, join, getsize
 from shutil import rmtree
@@ -7,7 +8,7 @@ from subprocess import run, Popen, PIPE
 from _task import _source_dir, _image_dir, _server_dir, config
 
 
-class TaskProcess(Process):
+class TaskProcess(Thread):
     task: str
 
     def __init__(self, task: Value):

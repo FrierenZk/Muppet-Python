@@ -12,10 +12,10 @@ class TaskEntity(Process):
         self.unregistered = Value(c_bool, False)
         from _task.task_process import TaskProcess
         self.process = TaskProcess(Value(c_wchar_p, self.task))
+        self.process.daemon = True
 
     def run(self) -> None:
         try:
-            self.process.daemon = True
             self.process.start()
             while self.process.is_alive():
                 self.process.join(10)
@@ -26,9 +26,6 @@ class TaskEntity(Process):
             print("task", self.task, "thread terminated")
 
     def terminate(self):
-        if self.process is not None:
-            if self.process.is_alive():
-                self.process.terminate()
         self.unregister()
         super(TaskEntity, self).terminate()
         return
