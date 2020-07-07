@@ -2,6 +2,5 @@
 /dist/
 /Muppet-Python-x86_64-linux.spec
 /clean.spec
-/tasks.txt
 /build_list.json
-/_task/build_list.json
+/build_list.json.tmp
