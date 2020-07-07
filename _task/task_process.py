@@ -4,8 +4,7 @@ from os.path import isfile, isdir, join, getsize
 from shutil import rmtree
 from subprocess import run, Popen, PIPE
 
-from _task import _source_dir, _image_dir, _server_dir
-from _task.config import config
+from _task import _source_dir, _image_dir, _server_dir, config
 
 
 class TaskProcess(Process):
