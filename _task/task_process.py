@@ -36,7 +36,7 @@ class TaskProcess(Process):
             continue
         if self.shell_process is not None:
             print(4)
-            killpg(getpgid(self.shell_process.pid), 9)
+            self.shell_process.kill()
         print(5)
         super().terminate()
 
