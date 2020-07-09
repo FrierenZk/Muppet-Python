@@ -6,13 +6,13 @@ from threading import Thread
 
 class TaskEntity(Thread):
     task: str
+    process = None
 
     def __init__(self, task: str, callback):
         super().__init__()
         self.task = task
         self._callback = callback
         self.unregistered = Value(c_bool, False)
-        self.process = Process()
 
     def run(self) -> None:
         from _task.task_process import TaskProcess
@@ -26,7 +26,7 @@ class TaskEntity(Thread):
     def terminate(self):
         from _task.task_process import TaskProcess
         print(0)
-        if self.process.is_alive():
+        if self.process is not None:
             print(1)
             self.process: TaskProcess
             self.process.terminate()
@@ -38,6 +38,7 @@ class TaskEntity(Thread):
 
     def unregister(self):
         self.unregistered.acquire()
+        print(8)
         if self.unregistered.value is False:
             self._callback(task=self.task, flag=True)
             self.unregistered.value = True

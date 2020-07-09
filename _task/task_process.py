@@ -32,6 +32,8 @@ class TaskProcess(Process):
 
     def terminate(self) -> None:
         print(3)
+        while self.shell_process is None:
+            continue
         if self.shell_process is not None:
             print(4)
             killpg(getpgid(self.shell_process.pid), 9)
