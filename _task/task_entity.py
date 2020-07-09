@@ -1,5 +1,6 @@
 from ctypes import c_wchar_p, c_bool
 from multiprocessing import Process, Value
+from time import sleep
 from threading import Thread
 
 
@@ -18,13 +19,21 @@ class TaskEntity(Thread):
         self.process = TaskProcess(Value(c_wchar_p, self.task))
         self.process.daemon = True
         self.process.run()
+        sleep(0)
         self.unregister()
         print("Task", self.task, "thread terminated")
 
     def terminate(self):
-        self.unregister()
+        from _task.task_process import TaskProcess
+        print(0)
         if self.process.is_alive():
+            print(1)
+            self.process: TaskProcess
             self.process.terminate()
+            print(6)
+            sleep(0)
+            self.unregister()
+            print(7)
         return
 
     def unregister(self):

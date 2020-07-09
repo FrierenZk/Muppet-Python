@@ -31,8 +31,11 @@ class TaskProcess(Process):
             print(err)
 
     def terminate(self) -> None:
+        print(3)
         if self.shell_process is not None:
+            print(4)
             killpg(getpgid(self.shell_process.pid), 9)
+        print(5)
         super().terminate()
 
     def _svn_update(self):
