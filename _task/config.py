@@ -28,7 +28,7 @@ class Config:
             for i, j in v.items():
                 i: str
                 j: Dict
-                self.build_list[i] = {**{"type": k}, **j}
+                self.build_list[i] = {**{'category': k}, **j}
         print(self.build_list)
 
     def __del__(self):
@@ -62,10 +62,10 @@ class Config:
         finally:
             return
 
-    def get_type(self, task: str):
+    def get_category(self, task: str):
         if task in self.build_list:
-            if 'type' in self.build_list[task]:
-                return self.build_list[task]['type']
+            if 'category' in self.build_list[task]:
+                return self.build_list[task]['category']
         return None
 
     def get_profile(self, task: str):
@@ -74,10 +74,10 @@ class Config:
                 return self.build_list[task]['profile']
         return None
 
-    def get_name(self, task: str):
+    def get_projectName(self, task: str):
         if task in self.build_list:
-            if 'name' in self.build_list[task]:
-                return self.build_list[task]['name']
+            if 'projectName' in self.build_list[task]:
+                return self.build_list[task]['projectName']
         return None
 
     def get(self, task: str, value: str):
@@ -92,10 +92,10 @@ class Config:
                 return self.build_list[task]['svn_update']
         return True
 
-    def get_sources(self, task: str):
+    def get_sourcesPath(self, task: str):
         if task in self.build_list:
-            if 'sources' in self.build_list[task]:
-                return self.build_list[task]['sources']
+            if 'sourcesPath' in self.build_list[task]:
+                return self.build_list[task]['sourcesPath']
         return None
 
     def get_upload(self, task: str):
@@ -126,6 +126,12 @@ class Config:
         if task in self.build_list:
             if 'uploadPath' in self.build_list[task]:
                 return self.build_list[task]['uploadPath']
+        return None
+
+    def get_basePath(self, task: str):
+        if task in self.build_list:
+            if 'basePath' in self.build_list[task]:
+                return self.build_list[task]['basePath']
         return None
 
 

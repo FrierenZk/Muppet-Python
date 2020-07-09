@@ -7,38 +7,41 @@ server_dir = {
     "tags": "tags_version"
 }
 
-type_dir = {
+category_dir = {
     "trunk": "maintrunk"
 }
 
 
 def _server_dir(task: str):
     type_path: str
-    t = config.get_type(task)
-    if t is None:
+    category = config.get_category(task)
+    if category is None:
         return None
-    if t in server_dir.keys():
-        t = server_dir[t]
+    if category in server_dir.keys():
+        category = server_dir[category]
     uploadPath = config.get_uploadPath(task)
     if uploadPath is None:
-        name = config.get_name(task)
+        name = config.get_projectName(task)
     else:
         name = uploadPath
     if name is None:
         return None
-    return ("172.18.36.250:/volume1/version/" + t + "/" + name + "/").strip()
+    return ("172.18.36.250:/volume1/version/" + category + "/" + name + "/").strip()
 
 
 def _work_dir(task: str):
-    t = config.get_type(task)
-    if t is None:
+    category = config.get_category(task)
+    if category is None:
         return None
-    if t in type_dir.keys():
-        t = type_dir[t]
-    name = config.get_name(task)
+    if category in category_dir.keys():
+        category = category_dir[category]
+    name = config.get_projectName(task)
     if name is None:
         return None
-    return expanduser('~') + "/catv/" + t + "/" + name + "/"
+    basePath = config.get_basePath(task)
+    if basePath is None:
+        basePath = "catv"
+    return expanduser('~') + "/" + basePath + "/" + category + "/" + name + "/"
 
 
 def _image_dir(task: str):
@@ -46,15 +49,18 @@ def _image_dir(task: str):
 
 
 def _source_dir(task: str):
-    t = config.get_type(task)
-    if t is None:
+    category = config.get_category(task)
+    if category is None:
         return None
-    if t in type_dir.keys():
-        t = type_dir[t]
-    name = config.get_name(task)
+    if category in category_dir.keys():
+        category = category_dir[category]
+    name = config.get_projectName(task)
     if name is None:
         return None
-    sources = config.get_sources(task)
+    sources = config.get_sourcesPath(task)
     if sources is None:
         sources = "catv-hgu-sfu-allinone"
-    return expanduser('~') + "/catv/" + t + "/" + name + "/" + sources + "/"
+    basePath = config.get_basePath(task)
+    if basePath is None:
+        basePath = "catv"
+    return expanduser('~') + "/" + basePath + "/" + category + "/" + name + "/" + sources + "/"

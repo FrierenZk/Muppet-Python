@@ -31,7 +31,7 @@ class Muppet(Process):
                     if i not in self.task_list.keys():
                         flag = True
                         for j in self.task_list.keys():
-                            if config.get_name(i) == config.get_name(j):
+                            if config.get_projectName(i) == config.get_projectName(j):
                                 flag = False
                                 break
                         if flag:
