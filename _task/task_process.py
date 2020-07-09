@@ -38,7 +38,7 @@ class TaskProcess(Process):
             print(4)
             self.shell_process.kill()
         print(5)
-        super().terminate()
+        super(TaskProcess, self).terminate()
 
     def _svn_update(self):
         chdir(_source_dir(self.task))
