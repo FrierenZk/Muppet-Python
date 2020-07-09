@@ -35,7 +35,7 @@ class TaskProcess(Process):
             continue
         while self.shell_process.poll() is None:
             print(1)
-            self.shell_process.send_signal(signal=1)
+            self.shell_process.send_signal(1)
 
     def _svn_update(self):
         chdir(_source_dir(self.task))
