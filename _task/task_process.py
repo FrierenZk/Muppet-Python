@@ -1,5 +1,5 @@
 from multiprocessing import Process, Value
-from os import chdir, remove, listdir, killpg, getpgid
+from os import chdir, remove, listdir, kill
 from os.path import isfile, isdir, join, getsize
 from shutil import rmtree
 from subprocess import run, Popen, PIPE
@@ -34,7 +34,7 @@ class TaskProcess(Process):
         while self.shell_process is None:
             continue
         if self.shell_process is not None:
-            self.shell_process.kill()
+            kill(self.shell_process.pid, 9)
 
     def _svn_update(self):
         chdir(_source_dir(self.task))
