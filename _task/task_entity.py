@@ -19,7 +19,6 @@ class TaskEntity(Thread):
         self.process = TaskProcess(Value(c_wchar_p, self.task))
         self.process.daemon = True
         self.process.run()
-        sleep(0)
         self.unregister()
         print("Task", self.task, "thread terminated")
 
@@ -32,8 +31,6 @@ class TaskEntity(Thread):
             self.process.terminate()
             print(6)
             sleep(0)
-            self.unregister()
-            print(7)
         return
 
     def unregister(self):
