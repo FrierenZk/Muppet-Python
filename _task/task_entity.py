@@ -1,7 +1,7 @@
 from ctypes import c_wchar_p, c_bool
-from multiprocessing import Process, Value
-from time import sleep
+from multiprocessing import Value
 from threading import Thread
+from time import sleep
 
 
 class TaskEntity(Thread):
@@ -37,9 +37,9 @@ class TaskEntity(Thread):
         return
 
     def unregister(self):
-        self.unregistered.acquire()
-        print(8)
-        if self.unregistered.value is False:
-            self._callback(task=self.task, flag=True)
-            self.unregistered.value = True
-        self.unregistered.release()
+        with self.unregistered.get_lock():
+            print(8)
+            if self.unregistered.value is False:
+                self._callback(task=self.task, flag=True)
+                self.unregistered.value = True
+                print(9)
