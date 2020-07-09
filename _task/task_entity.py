@@ -15,7 +15,7 @@ class TaskEntity(Thread):
 
     def run(self) -> None:
         from _task.task_process import TaskProcess
-        self.process = TaskProcess(Value(c_wchar_p,self.task))
+        self.process = TaskProcess(Value(c_wchar_p, self.task))
         self.process.daemon = True
         self.process.run()
         self.unregister()
