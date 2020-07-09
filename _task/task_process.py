@@ -1,6 +1,7 @@
 from multiprocessing import Process, Value
 from os import chdir, remove, listdir
 from os.path import isfile, isdir, join, getsize
+from signal import CTRL_C_EVENT
 from shutil import rmtree
 from subprocess import run, Popen, PIPE
 
@@ -35,7 +36,7 @@ class TaskProcess(Process):
             continue
         while self.shell_process.poll() is None:
             print(1)
-            self.shell_process.send_signal(1)
+            self.shell_process.send_signal(CTRL_C_EVENT)
 
     def _svn_update(self):
         chdir(_source_dir(self.task))
