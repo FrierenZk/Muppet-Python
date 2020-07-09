@@ -1,5 +1,5 @@
 from multiprocessing import Process, Value
-from os import chdir, remove, listdir
+from os import chdir, remove, listdir, killpg, getpgid
 from os.path import isfile, isdir, join, getsize
 from shutil import rmtree
 from subprocess import run, Popen, PIPE
@@ -32,7 +32,7 @@ class TaskProcess(Process):
 
     def terminate(self) -> None:
         if self.shell_process is not None:
-            self.shell_process.terminate()
+            killpg(getpgid(self.shell_process.pid), 9)
         super().terminate()
 
     def _svn_update(self):
