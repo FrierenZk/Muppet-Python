@@ -1,5 +1,6 @@
 from multiprocessing import Process, Value
 from os import chdir, remove, listdir, kill
+from signal import SIGINT
 from os.path import isfile, isdir, join, getsize
 from shutil import rmtree
 from subprocess import run, Popen, PIPE
@@ -33,8 +34,9 @@ class TaskProcess(Process):
     def terminate(self) -> None:
         while self.shell_process is None:
             continue
-        if self.shell_process is not None:
-            kill(self.shell_process.pid, 9)
+        while self.shell_process.poll() is None:
+            print(1)
+            self.shell_process.send_signal(signal=SIGINT)
 
     def _svn_update(self):
         chdir(_source_dir(self.task))
