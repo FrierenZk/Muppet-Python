@@ -9,6 +9,7 @@ from _task import _source_dir, _image_dir, _server_dir, config
 
 class TaskProcess(Process):
     task: str
+    shell_process = None
 
     def __init__(self, task: Value):
         super().__init__()
@@ -28,6 +29,11 @@ class TaskProcess(Process):
                 print("Task", self.task, "finished with no uploaded")
         except Exception as err:
             print(err)
+
+    def terminate(self) -> None:
+        if self.shell_process is not None:
+            self.shell_process.terminate()
+        super().terminate()
 
     def _svn_update(self):
         chdir(_source_dir(self.task))
@@ -60,11 +66,11 @@ class TaskProcess(Process):
         cmd = "./mkfw.sh " + config.get_profile(self.task)
         cmd = cmd + " clean && " + cmd
         print("Making compilation...")
-        shell_process = Popen(cmd, shell=True, bufsize=30, stdout=PIPE,
-                              stderr=PIPE)
-        out, err = shell_process.communicate()
-        shell_process.wait()
-        if shell_process.returncode == 0:
+        self.shell_process = Popen(cmd, shell=True, bufsize=30, stdout=PIPE,
+                                   stderr=PIPE)
+        out, err = self.shell_process.communicate()
+        self.shell_process.wait()
+        if self.shell_process.returncode == 0:
             print("Task", cmd, "success")
             return True
         else:
