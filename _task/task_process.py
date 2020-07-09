@@ -1,5 +1,5 @@
 from multiprocessing import Process, Value
-from os import chdir, remove, listdir
+from os import chdir, remove, listdir, killpg, setsid
 from os.path import isfile, isdir, join, getsize
 from shutil import rmtree
 from subprocess import run, Popen, PIPE
@@ -33,9 +33,8 @@ class TaskProcess(Process):
     def terminate(self) -> None:
         while self.shell_process is None:
             continue
-        while self.shell_process.poll() is None:
-            print(1)
-            self.shell_process.send_signal(0)
+        if self.shell_process.poll() is None:
+            killpg(self.shell_process.pid, 9)
 
     def _svn_update(self):
         chdir(_source_dir(self.task))
@@ -69,7 +68,7 @@ class TaskProcess(Process):
         cmd = cmd + " clean && " + cmd
         print("Making compilation...")
         self.shell_process = Popen(cmd, shell=True, bufsize=30, stdout=PIPE,
-                                   stderr=PIPE)
+                                   stderr=PIPE, preexec_fn=setsid)
         out, err = self.shell_process.communicate()
         self.shell_process.wait()
         if self.shell_process.returncode == 0:
