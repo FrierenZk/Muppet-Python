@@ -31,13 +31,10 @@ class TaskProcess(Process):
             print(err)
 
     def terminate(self) -> None:
-        print(3)
         while self.shell_process is None:
             continue
         if self.shell_process is not None:
-            print(4)
             self.shell_process.kill()
-        print(5)
 
     def _svn_update(self):
         chdir(_source_dir(self.task))

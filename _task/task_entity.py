@@ -24,19 +24,14 @@ class TaskEntity(Thread):
 
     def terminate(self):
         from _task.task_process import TaskProcess
-        print(0)
         if self.process is not None:
-            print(1)
             self.process: TaskProcess
             self.process.terminate()
-            print(6)
             sleep(0)
         return
 
     def unregister(self):
         with self.unregistered.get_lock():
-            print(8)
             if self.unregistered.value is False:
                 self._callback(task=self.task, flag=True)
                 self.unregistered.value = True
-                print(9)
