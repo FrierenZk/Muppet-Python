@@ -1,6 +1,7 @@
-from multiprocessing import cpu_count, Process, Lock, Queue, Pool
+from multiprocessing import cpu_count, Process, Lock, Queue
 from typing import Dict
 
+from _server import Server
 from _task import config, TaskEntity
 from input_thread import InputThread
 
@@ -19,6 +20,10 @@ class Muppet(Process):
                                  callback_add_task=self.callback_add_task, callback_exit=self.callback_exit)
         self.input.daemon = True
         self.input.start()
+        self.server = Server(callback_add_task=self.callback_add_task, callback_stop_task=self.callback_task_finish,
+                             callback_get_task_list=self.callback_get_task_list,
+                             callback_get_waiting_count=self.callback_get_waiting_count)
+        self.server.start()
 
     def run(self) -> None:
         try:
@@ -86,3 +91,14 @@ class Muppet(Process):
             self.task_list_waiting.put(task)
             return True, task
         return False, None
+
+    def callback_get_task_list(self):
+        data = []
+        self.task_list_lock.acquire()
+        for i in self.task_list.keys():
+            data.append(i)
+        self.task_list_lock.release()
+        return data
+
+    def callback_get_waiting_count(self):
+        return self.task_list_waiting.qsize()
