@@ -62,6 +62,12 @@ class Config:
         finally:
             return
 
+    def get_tasks(self):
+        taskList = []
+        for i in self.build_list.keys():
+            taskList.append(i)
+        return taskList
+
     def get_category(self, task: str):
         if task in self.build_list:
             if 'category' in self.build_list[task]:
