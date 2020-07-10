@@ -14,7 +14,6 @@ class Muppet(Process):
     def __init__(self):
         super().__init__()
         self.task_list_lock = Lock()
-        self.task_list_waiting_lock = Lock()
         self.task_list_waiting: Queue[str]
         self.input = InputThread(callback_task_finish=self.callback_task_finish,
                                  callback_add_task=self.callback_add_task, callback_exit=self.callback_exit)
