@@ -1,15 +1,14 @@
 from json import dumps
 from multiprocessing import Queue
 from threading import Thread
-from typing import Dict
 
 import socketio
+from eliot import to_file, start_action
 from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
 
 from _task import config
 
-from eliot import to_file, start_action
 to_file(open("server.log", "w"))
 
 
@@ -34,7 +33,7 @@ class Server(Thread):
                 if environ is not None:
                     print(sid, environ, 'Now disconnected')
                 else:
-                    print(sid, 'Now connected')
+                    print(sid, 'Now disconnected')
 
         @self.sio.event
         def get_task_list(sid, data=None):
@@ -67,7 +66,7 @@ class Server(Thread):
                 Thread(target=self.stop_task, args=(sid, data), daemon=True).start()
 
         print("Listen on port 21518")
-        WSGIServer(('', 21518), self.app, handler_class=WebSocketHandler).serve_forever()
+        WSGIServer(('0.0.0.0', 21518), self.app, handler_class=WebSocketHandler).serve_forever()
 
     def __init__(self, callback_get_waiting_count, callback_get_task_list, callback_add_task, callback_stop_task):
         super(Server, self).__init__()
