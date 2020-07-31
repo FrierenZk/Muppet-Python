@@ -2,10 +2,6 @@ from json import dumps
 
 x = {
     "trunk": {
-        "wuyi": {
-            "projectName": "wuyi",
-            "profile": "catv_wuyi_nocolor_sfu_xpon_nowifi_cable_novoice_nousb"
-        },
         "fujian": {
             "projectName": "fujian",
             "profile": "catv_fujian_nocolor_hgu_xpon_wifi_cable_voice_usb"
@@ -39,6 +35,10 @@ x = {
             "projectName": "huashusfu",
             "profile": "catv_huashu_nocolor_sfu_xpon_nowifi_cable_novoice_nousb"
         },
+        "huashu": {
+            "projectName": "huashu",
+            "profile": "catv_huashu_nocolor_hgu_xpon_wifi_nocable_novoice_nousb"
+        },
         "shaoxing": {
             "projectName": "shaoxing",
             "profile": "catv_shaoxing_nocolor_sfu_xpon_nowifi_cable_novoice_nousb"
@@ -68,13 +68,28 @@ x = {
         "mexico2.0": {
             "projectName": "mexico-2.0",
             "profile": "catv_mexicanos_nocolor_hgu_xpon_wifi_nocable_novoice_nousb"
-        }
+        },
     },
     "7528": {
         "7528-sfu": {
             "projectName": "catv_general_black_sfu_gpon_nowifi_cable_novoice_nousb",
             "profile": "catv_general_black_sfu_gpon_nowifi_cable_novoice_nousb",
             "sourcesPath": "MTK-7528-SFU"
+        },
+        "7528-wifi": {
+            "projectName": "catv_general_black_hgu_gpon_wifi_cable_voice_usb",
+            "profile": "catv_general_black_hgu_gpon_wifi_cable_voice_usb",
+            "sourcesPath": "MTK-7528"
+        },
+        "7528-wifi2": {
+            "projectName": "catv_general_black_hgu_gpon_wifi2_cable_voice_usb",
+            "profile": "catv_general_black_hgu_gpon_wifi2_cable_voice_usb",
+            "sourcesPath": "MTK-7528"
+        },
+        "7528-fujian": {
+            "projectName": "fujian",
+            "profile": "catv_fujian_black_hgu_gpon_wifi2_cable_voice_usb",
+            "sourcesPath": "MTK-7528"
         }
     },
     "7580": {
@@ -98,6 +113,10 @@ x = {
         "ecuador": {
             "projectName": "FDT_ecuador",
             "profile": "catv_ecuador_nocolor_hgu_xpon_wifi_cable_voice_usb"
+        },
+        "tvecuador": {
+            "projectName": "FDT_ecuador",
+            "profile": "catv_tvecuador_nocolor_hgu_xpon_wifi_cable_voice_usb"
         }
     }
 }
