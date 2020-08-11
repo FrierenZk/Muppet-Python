@@ -4,6 +4,7 @@ from typing import Dict
 from _server import Server
 from _task import config, TaskEntity
 from input_thread import InputThread
+from _timer import TimerThread
 
 
 class Muppet(Process):
@@ -24,6 +25,8 @@ class Muppet(Process):
                              callback_get_task_list=self.callback_get_task_list,
                              callback_get_waiting_count=self.callback_get_waiting_count)
         self.server.start()
+        self.timer = TimerThread(self.callback_timer_add_task)
+        self.timer.start()
 
     def run(self) -> None:
         try:
@@ -91,6 +94,13 @@ class Muppet(Process):
             self.task_list_waiting.put(task)
             return True, task
         return False, None
+
+    def callback_timer_add_task(self, task: str):
+        self.task_list_lock.acquire()
+        if task not in self.task_list.keys():
+            self.task_list[task] = TaskEntity(task, self.callback_task_finish, True)
+        self.task_list_lock.release()
+        self.task_list[task].start()
 
     def callback_get_task_list(self):
         data = []

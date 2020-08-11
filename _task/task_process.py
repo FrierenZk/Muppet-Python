@@ -11,14 +11,23 @@ class TaskProcess(Process):
     task: str
     shell_process = None
 
-    def __init__(self, task: Value):
+    def __init__(self, task: Value, svn_check=False):
         super().__init__()
         self.task = task.value
+        self.svn_check = svn_check
 
     def run(self) -> None:
         try:
             if config.get_update(self.task) is not False:
+                svn = ""
+                if self.svn_check:
+                    svn = self._svn_info()
                 self._svn_update()
+                if self.svn_check:
+                    svn2 = self._svn_info()
+                    if svn == svn2:
+                        print("Svn have no change, build skipped")
+                        return
             else:
                 print("Svn up skipped")
             self._image_clean()
@@ -46,6 +55,15 @@ class TaskProcess(Process):
             print("Task=" + self.task, "svn cleanup", ret)
         ret = run("svn up", shell=True)
         print("Task=" + self.task, "svn up", ret)
+
+    def _svn_info(self) -> str:
+        chdir(_source_dir(self.task))
+        cmd = "svn info | grep \"Last Changed Rev\""
+        process = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+        out, _ = process.communicate()
+        process.wait()
+        print(out)
+        return str(out)
 
     def _image_clean(self):
         image_dir = _image_dir(self.task)

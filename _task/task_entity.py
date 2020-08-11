@@ -8,15 +8,16 @@ class TaskEntity(Thread):
     task: str
     process = None
 
-    def __init__(self, task: str, callback):
+    def __init__(self, task: str, callback, svn_check=False):
         super().__init__()
         self.task = task
         self._callback = callback
+        self.svn_check = svn_check
         self.unregistered = Value(c_bool, False)
 
     def run(self) -> None:
         from _task.task_process import TaskProcess
-        self.process = TaskProcess(Value(c_wchar_p, self.task))
+        self.process = TaskProcess(Value(c_wchar_p, self.task), self.svn_check)
         self.process.daemon = True
         self.process.run()
         self.unregister()

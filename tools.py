@@ -46,6 +46,10 @@ x = {
         "hunan": {
             "projectName": "hunan",
             "profile": "catv_hunan_nocolor_hgu_xpon_wifi_cable_voice_nousb"
+        },
+        "guangxi-trunk": {
+            "projectName": "guangxi",
+            "profile": "catv_guangxi_nocolor_sfu_xpon_nowifi_nocable_novoice_nousb"
         }
     },
     "tags": {
@@ -69,6 +73,10 @@ x = {
             "projectName": "mexico-2.0",
             "profile": "catv_mexicanos_nocolor_hgu_xpon_wifi_nocable_novoice_nousb"
         },
+        "shandong": {
+            "projectName": "hunan-2.0",
+            "profile": "catv_shandong16_nocolor_sfu_xpon_nowifi_cable_novoice_nousb"
+        }
     },
     "7528": {
         "7528-sfu": {
@@ -101,8 +109,14 @@ x = {
     },
     "wifi6": {
         "wifi6": {
-            "projectName": ".",
-            "profile": "CT_EN7561D_LE_7915D_AP_demo"
+            "projectName": "wifi6",
+            "profile": "CT_EN7561D_LE_7915D_AP_demo",
+            "uploadPath": "."
+        },
+        "wifi6_new": {
+            "projectName": "wifi6_new",
+            "profile": "CT_EN7561D_LE_7915D_AP_demo",
+            "uploadPath": "."
         }
     },
     "branches": {
@@ -123,5 +137,17 @@ x = {
 
 with open("build_list.json", 'w') as file:
     data = dumps(x, indent=4, sort_keys=True)
+    file.write(data)
+    file.close()
+
+y = [
+    {
+        "name": "wifi6_new",
+        "interval": 60
+    }
+]
+
+with open("timer_list.json", 'w') as file:
+    data = dumps(y, indent=4, sort_keys=True)
     file.write(data)
     file.close()
