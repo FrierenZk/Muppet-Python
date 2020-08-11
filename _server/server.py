@@ -1,6 +1,7 @@
 from json import dumps
 from multiprocessing import Queue
 from threading import Thread
+from engineio.async_drivers import gevent
 
 import socketio
 from eliot import to_file, start_action
