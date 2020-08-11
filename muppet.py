@@ -24,8 +24,10 @@ class Muppet(Process):
         self.server = Server(callback_add_task=self.callback_add_task, callback_stop_task=self.callback_task_finish,
                              callback_get_task_list=self.callback_get_task_list,
                              callback_get_waiting_count=self.callback_get_waiting_count)
+        self.server.daemon = True
         self.server.start()
         self.timer = TimerThread(self.callback_timer_add_task)
+        self.timer.daemon = True
         self.timer.start()
 
     def run(self) -> None:
