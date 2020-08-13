@@ -4,4 +4,6 @@ if [ ! -d ./dist/Muppet-Python-Portable-x86_64-linux  ];then
 	mkdir ./dist/Muppet-Python-Portable-x86_64-linux
 fi
 mv ./build_list.json ./dist/Muppet-Python-Portable-x86_64-linux/build_list.json
+mv ./timer_list.json ./dist/Muppet-Python-Portable-x86_64-linux/timer_list.json
+mv ./server_settings.json ./dist/Muppet-Python-Portable-x86_64-linux/server_settings.json
 mv ./dist/Muppet-Python-Portable-x86_64-linux.bin ./dist/Muppet-Python-Portable-x86_64-linux/Muppet-Python-Portable-x86_64-linux
