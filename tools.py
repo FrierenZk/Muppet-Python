@@ -151,3 +151,12 @@ with open("timer_list.json", 'w') as file:
     data = dumps(y, indent=4, sort_keys=True)
     file.write(data)
     file.close()
+
+z = {
+    "port": 21518
+}
+
+with open("server_settings.json", 'w') as file:
+    data = dumps(z, indent=4, sort_keys=True)
+    file.write(data)
+    file.close()

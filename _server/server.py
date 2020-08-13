@@ -1,12 +1,15 @@
 from json import dumps
 from multiprocessing import Queue
 from threading import Thread
-from engineio.async_drivers import gevent
+from json import load
 
 import socketio
 from eliot import to_file, start_action
 from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
+
+# noinspection PyUnresolvedReferences
+from engineio.async_drivers import gevent
 
 from _task import config
 
@@ -66,8 +69,22 @@ class Server(Thread):
                 print(sid, 'Calling stop_task', data)
                 Thread(target=self.stop_task, args=(sid, data), daemon=True).start()
 
-        print("Listen on port 21518")
-        WSGIServer(('0.0.0.0', 21518), self.app, handler_class=WebSocketHandler).serve_forever()
+        port: int = 0
+        try:
+            with open("server_settings.json", 'r') as file:
+                dic = load(file)
+                dic: dict
+                if 'port' in dic.keys():
+                    port = int(dic['port'])
+        except Exception as e:
+            print(e)
+        finally:
+            if port <= 0:
+                print("Read server_settings.json error, use default port 21518")
+                port = 21518
+
+        print("Listen on port", port)
+        WSGIServer(('0.0.0.0', port), self.app, handler_class=WebSocketHandler).serve_forever()
 
     def __init__(self, callback_get_waiting_count, callback_get_task_list, callback_add_task, callback_stop_task):
         super(Server, self).__init__()
