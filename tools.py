@@ -143,7 +143,7 @@ with open("build_list.json", 'w') as file:
 y = [
     {
         "name": "wifi6_new",
-        "interval": 60
+        "interval": 120
     }
 ]
 
