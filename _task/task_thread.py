@@ -13,11 +13,15 @@ class TaskThread(Thread):
     shell_process = None
     status = True
 
-    def __init__(self, task: str, callback, svn_check=False):
+    def __init__(self, task: str, finish, svn_check=False, push=None):
         super().__init__()
         self.task = task
-        self.finish = callback
+        self.finish = finish
         self.svn_check = svn_check
+        if push is not None:
+            self.push_logs = push
+        else:
+            self.push_logs = lambda x, y: None
 
     def run(self) -> None:
         try:
@@ -45,11 +49,6 @@ class TaskThread(Thread):
         killpg(self.shell_process.pid, SIGKILL)
         while self.shell_process.poll() is None:
             self.shell_process.send_signal(SIGINT)
-
-    # Test
-    @staticmethod
-    def push_logs(task: str, string: str):
-        pass
 
     def push_with_print(self, *args):
         string = ""
