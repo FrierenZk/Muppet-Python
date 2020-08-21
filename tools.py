@@ -25,7 +25,7 @@ x = {
         "jingning977": {
             "projectName": "jingning977",
             "profile": "catv_jingning_white_sfu_epon_nowifi_cable_novoice_nousb",
-            "svn_update": False
+            "svnUpdate": False
         },
         "jingning": {
             "projectName": "jingning",
@@ -82,6 +82,11 @@ x = {
         "7528-sfu": {
             "projectName": "catv_general_black_sfu_gpon_nowifi_cable_novoice_nousb",
             "profile": "catv_general_black_sfu_gpon_nowifi_cable_novoice_nousb",
+            "sourcesPath": "MTK-7528-SFU"
+        },
+        "7528-guangxi": {
+            "projectName": "guangxi",
+            "profile": "catv_guangxi_black_sfu_xpon_nowifi_cable_novoice_nousb",
             "sourcesPath": "MTK-7528-SFU"
         },
         "7528-wifi": {
