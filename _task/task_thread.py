@@ -41,10 +41,10 @@ class TaskThread(Thread):
         if self.shell_process is None:
             return
         from os import killpg
-        from signal import SIGKILL, CTRL_BREAK_EVENT
+        from signal import SIGKILL, SIGINT
         killpg(self.shell_process.pid, SIGKILL)
         while self.shell_process.poll() is None:
-            self.shell_process.send_signal(CTRL_BREAK_EVENT)
+            self.shell_process.send_signal(SIGINT)
 
     # Test
     @staticmethod
