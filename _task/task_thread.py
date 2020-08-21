@@ -67,11 +67,12 @@ class TaskThread(Thread):
 
     def awaitProcess(self) -> int:
         while True:
-            output = self.shell_process.stdout.readline()
+            outputBytes: bytes = self.shell_process.stdout.readline()
+            output: str = str(outputBytes, encoding='utf8').strip()
             if output == '' and self.shell_process.poll() is not None:
                 break
             if output:
-                self.push_with_print(output.strip())
+                self.push_with_print(output)
         return self.shell_process.poll()
 
     def _svn_update(self) -> bool:
