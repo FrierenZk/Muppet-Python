@@ -1,5 +1,5 @@
 from threading import Thread
-from os import chdir, remove, listdir, setsid
+from os import chdir, remove, listdir
 from os.path import isfile, isdir, join, getsize
 from shutil import rmtree
 from subprocess import run, Popen, PIPE
@@ -18,18 +18,17 @@ class TaskThread(Thread):
         self.task = task
         self.finish = finish
         self.svn_check = svn_check
-        if push is not None:
-            self.push_logs = push
-        else:
-            self.push_logs = lambda x, y: None
+        self.push_logs = push
 
     def run(self) -> None:
         try:
             if config.get_svnNoUpdate(task=self.task):
                 self.push_with_print("Svn up skipped")
             else:
+                self.push_with_print("Svn update")
                 self.status &= self._svn_update()
             self._image_clean()
+            self.push_with_print("Build image")
             ret: bool = self._image_build()
             if ret & config.get_upload(self.task) is True:
                 self._image_upload()
@@ -62,7 +61,8 @@ class TaskThread(Thread):
         if string == "":
             return
         print(string)
-        self.push_logs(self.task, string)
+        if self.push_logs is not None:
+            self.push_logs(self.task, string)
 
     def awaitProcess(self) -> int:
         while True:
@@ -84,7 +84,7 @@ class TaskThread(Thread):
             return self.status
         chdir(_source_dir(self.task))
         from os import setsid
-        self.shell_process = Popen("svn up", shell=True, stdout=PIPE, stderr=PIPE,
+        self.shell_process = Popen("svn up", shell=True, stdout=PIPE,
                                    preexec_fn=setsid)
         ret = self.awaitProcess()
         self.push_with_print("Task=" + self.task, "svn up", ret)
@@ -129,7 +129,8 @@ class TaskThread(Thread):
         cmd = "./mkfw.sh " + config.get_profile(self.task)
         cmd = cmd + " clean && " + cmd
         self.push_with_print("Making compilation...")
-        self.shell_process = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE,
+        from os import setsid
+        self.shell_process = Popen(cmd, shell=True, stdout=PIPE,
                                    preexec_fn=setsid)
         ret = self.awaitProcess()
         if ret == 0:
