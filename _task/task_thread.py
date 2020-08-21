@@ -76,15 +76,15 @@ class TaskThread(Thread):
                 # Do nothing
                 pass
             if out is not None:
-                self.push_logs(self.task, str(out))
+                self.push_with_print(str(out))
             if err is not None:
-                self.push_logs(self.task, str(err))
+                self.push_with_print(str(err))
             ret = self.shell_process.poll()
         out, err = self.shell_process.communicate()
         if out is not None:
-            self.push_logs(self.task, str(out))
+            self.push_with_print(str(out))
         if err is not None:
-            self.push_logs(self.task, str(err))
+            self.push_with_print(str(err))
         return ret
 
     def _svn_update(self) -> bool:
