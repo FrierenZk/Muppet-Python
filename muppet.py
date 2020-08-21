@@ -1,13 +1,13 @@
 from multiprocessing import cpu_count, Process, Lock, Queue
 from typing import Dict
 
-from _server import Server
+from _server import Server, ServerCallBackInterface
 from _task import config, TaskThread
 from input_thread import InputThread
 from _timer import TimerThread
 
 
-class Muppet(Process):
+class Muppet(Process, ServerCallBackInterface):
     waiting_task_list = Queue()
     waiting_task_set = set()
     waiting_task_set_lock: Lock = Lock()
@@ -18,13 +18,11 @@ class Muppet(Process):
     def __init__(self):
         super().__init__()
         self.waiting_task_list: Queue[dict]
-        self.input = InputThread(callback_task_finish=self.callback_task_finish,
-                                 callback_add_task=self.callback_add_task, callback_exit=self.callback_exit)
+        self.input = InputThread(callback_task_finish=self.stop_task,
+                                 callback_add_task=self.add_task, callback_exit=self.callback_exit)
         self.input.daemon = True
         self.input.start()
-        self.server = Server(callback_add_task=self.callback_add_task, callback_stop_task=self.callback_task_finish,
-                             callback_get_task_list=self.callback_get_task_list,
-                             callback_get_waiting_count=self.callback_get_waiting_count)
+        self.server = Server(interface=self)
         self.server.daemon = True
         self.server.start()
         self.timer = TimerThread(self.callback_timer_add_task)
@@ -71,7 +69,7 @@ class Muppet(Process):
     def run_task(self, task: str, svn_check):
         print("Task", task, "running")
         self.processing_task_dic_lock.acquire()
-        self.processing_task_dic[task] = TaskThread(task, callback=self.callback_task_finish,
+        self.processing_task_dic[task] = TaskThread(task, finish=self.stop_task,
                                                     svn_check=svn_check)
         self.processing_task_dic[task].daemon = True
         self.processing_task_dic_lock.release()
@@ -94,7 +92,34 @@ class Muppet(Process):
         self._status = False
         self.task_push("")
 
-    def callback_task_finish(self, task, flag=True):
+    def callback_timer_add_task(self, task: str):
+        self.task_push(task, True)
+
+    def get_waiting_list(self) -> list:
+        data = []
+        self.waiting_task_set_lock.acquire()
+        for i in self.waiting_task_set:
+            data.append(i)
+        self.waiting_task_set_lock.release()
+        return data
+
+    def get_processing_list(self) -> list:
+        data = []
+        self.processing_task_dic_lock.acquire()
+        for i in self.processing_task_dic.keys():
+            data.append(i)
+        self.processing_task_dic_lock.release()
+        return data
+
+    def add_task(self, line: str) -> (bool, str):
+        i = line.find("execute ")
+        if i >= 0:
+            task = line[i + len("execute "):].strip('\n').strip('\r').strip()
+            self.task_push(task)
+            return True, task
+        return False, None
+
+    def stop_task(self, task: str, flag=True) -> None:
         self.processing_task_dic_lock.acquire()
         if task in self.processing_task_dic.keys():
             if flag is True:
@@ -105,27 +130,5 @@ class Muppet(Process):
                 self.processing_task_dic.pop(task)
                 print("Task", task, "terminated")
         else:
-            print("Can not find target task:", task)
+            print("Task", task, "already removed")
         self.processing_task_dic_lock.release()
-
-    def callback_add_task(self, line: str):
-        i = line.find("execute ")
-        if i >= 0:
-            task = line[i + len("execute "):].strip('\n').strip('\r').strip()
-            self.task_push(task)
-            return True, task
-        return False, None
-
-    def callback_timer_add_task(self, task: str):
-        self.task_push(task, True)
-
-    def callback_get_task_list(self):
-        data = []
-        self.processing_task_dic_lock.acquire()
-        for i in self.processing_task_dic.keys():
-            data.append(i)
-        self.processing_task_dic_lock.release()
-        return data
-
-    def callback_get_waiting_count(self):
-        return self.waiting_task_list.qsize()

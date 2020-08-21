@@ -21,6 +21,7 @@ class Server(Thread):
     app = socketio.WSGIApp(sio)
     queue = Queue()
     status = True
+    broadcast = "broadcast_room"
 
     def run(self) -> None:
         @self.sio.event
@@ -30,6 +31,7 @@ class Server(Thread):
                     print(sid, environ, 'Now connected')
                 else:
                     print(sid, 'Now connected')
+                self.sio.enter_room(sid, self.broadcast)
 
         @self.sio.event
         def disconnect(sid, environ=None):
@@ -38,24 +40,25 @@ class Server(Thread):
                     print(sid, environ, 'Now disconnected')
                 else:
                     print(sid, 'Now disconnected')
+                self.sio.leave_room(sid, self.broadcast)
 
         @self.sio.event
-        def get_task_list(sid, data=None):
-            with start_action(action_type='get_task_list', sid=sid, data=data):
-                print(sid, 'Calling get_task_list')
-                Thread(target=self.get_task_list, args=(sid,)).start()
+        def get_processing_list(sid, data=None):
+            with start_action(action_type='get_processing_list', sid=sid, data=data):
+                print(sid, 'Calling get_processing_list')
+                Thread(target=self.get_processing_list, args=(sid,)).start()
 
         @self.sio.event
-        def get_list(sid, data=None):
-            with start_action(action_type='get_list', sid=sid, data=data):
-                print(sid, 'Calling get_list')
-                Thread(target=self.get_list, args=(sid,), daemon=True).start()
+        def get_available_list(sid, data=None):
+            with start_action(action_type='get_available_list', sid=sid, data=data):
+                print(sid, 'Calling get_available_list')
+                Thread(target=self.get_available_list, args=(sid,), daemon=True).start()
 
         @self.sio.event
-        def get_waiting_count(sid, data=None):
-            with start_action(action_type='get_waiting_count', sid=sid, data=data):
-                print(sid, 'Calling get_waiting_count')
-                Thread(target=self.get_waiting_count, args=(sid,), daemon=True).start()
+        def get_waiting_list(sid, data=None):
+            with start_action(action_type='get_waiting_list', sid=sid, data=data):
+                print(sid, 'Calling get_waiting_list')
+                Thread(target=self.get_waiting_list, args=(sid,), daemon=True).start()
 
         @self.sio.event
         def add_task(sid, data):
@@ -86,12 +89,10 @@ class Server(Thread):
         print("Listen on port", port)
         WSGIServer(('0.0.0.0', port), self.app, handler_class=WebSocketHandler).serve_forever()
 
-    def __init__(self, callback_get_waiting_count, callback_get_task_list, callback_add_task, callback_stop_task):
+    def __init__(self, interface):
         super(Server, self).__init__()
-        self._callback_get_waiting_count = callback_get_waiting_count
-        self._callback_get_task_list = callback_get_task_list
-        self._callback_add_task = callback_add_task
-        self._callback_stop_task = callback_stop_task
+        from _server.server_callback_interface import ServerCallBackInterface
+        self.interface: ServerCallBackInterface = interface
 
     def terminate(self):
         self.status = False
@@ -100,27 +101,31 @@ class Server(Thread):
     def __del__(self):
         self.terminate()
 
-    def get_waiting_count(self, sid):
-        data = self._callback_get_waiting_count()
-        self.sio.emit(event='waiting_count', room=sid, data=data)
-
-    def get_task_list(self, sid):
-        data = self._callback_get_task_list()
+    def get_waiting_list(self, sid):
+        data = self.interface.get_waiting_list()
         data = dumps(data)
-        self.sio.emit(event='task_list', room=sid, data=data)
+        self.sio.emit(event='waiting_list', room=sid, data=data)
+
+    def get_processing_list(self, sid):
+        data = self.interface.get_processing_list()
+        data = dumps(data)
+        self.sio.emit(event='processing_list', room=sid, data=data)
 
     def add_task(self, sid, data):
-        self._callback_add_task(line='execute ' + data)
+        self.interface.add_task(line='execute ' + data)
         self.sio.emit(event='add', room=sid, data='Add ' + data + ' done')
 
     def stop_task(self, sid, data):
-        self._callback_stop_task(task=data, flag=False)
+        self.interface.stop_task(task=data, flag=False)
         self.sio.emit(event='stop', room=sid, data='Stop ' + data + ' done')
 
-    def get_list(self, sid):
+    def get_available_list(self, sid):
         data = {}
         tasks = config.get_tasks()
         for i in tasks:
             data[i] = config.get_category(i)
         data = dumps(data)
         self.sio.emit(event='list', room=sid, data=data)
+
+    def broadcast_logs(self, task: str, log: str):
+        self.sio.emit(event='broadcast_logs', room=self.broadcast, data={'task': task, 'broadcast_logs': log})
