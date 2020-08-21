@@ -84,7 +84,7 @@ class TaskThread(Thread):
             return self.status
         chdir(_source_dir(self.task))
         from os import setsid
-        self.shell_process = Popen("svn up", shell=True, stdout=PIPE,
+        self.shell_process = Popen("svn up", shell=True, stdout=PIPE, stderr=PIPE,
                                    preexec_fn=setsid)
         ret = self.awaitProcess()
         self.push_with_print("Task=" + self.task, "svn up", ret)
@@ -101,7 +101,7 @@ class TaskThread(Thread):
     def _svn_info(self) -> str:
         chdir(_source_dir(self.task))
         cmd = "svn info | grep \"Last Changed Rev\""
-        process = Popen(cmd, shell=True, stdout=PIPE)
+        process = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
         out, _ = process.communicate()
         process.wait()
         self.push_with_print(out)
@@ -129,7 +129,7 @@ class TaskThread(Thread):
         cmd = "./mkfw.sh " + config.get_profile(self.task)
         cmd = cmd + " clean && " + cmd
         self.push_with_print("Making compilation...")
-        self.shell_process = Popen(cmd, shell=True, stdout=PIPE,
+        self.shell_process = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE,
                                    preexec_fn=setsid)
         ret = self.awaitProcess()
         if ret == 0:
