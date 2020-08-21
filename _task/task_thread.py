@@ -66,21 +66,13 @@ class TaskThread(Thread):
         self.push_logs(self.task, string)
 
     def awaitProcess(self) -> int:
-        ret = self.shell_process.poll()
-        while ret is None:
-            out = None
-            err = None
-            try:
-                out, err = self.shell_process.communicate(timeout=1)
-                ret = self.shell_process.poll()
-            except Exception as _:
-                # Do nothing
-                pass
-            if out is not None:
-                self.push_with_print(str(out, encoding='utf-8'))
-            if err is not None:
-                self.push_with_print(str(err, encoding='utf-8'))
-        return ret
+        while True:
+            output = self.shell_process.stdout.readline()
+            if output == '' and self.shell_process.poll() is not None:
+                break
+            if output:
+                self.push_with_print(output.strip())
+        return self.shell_process.poll()
 
     def _svn_update(self) -> bool:
         # preUpdate
