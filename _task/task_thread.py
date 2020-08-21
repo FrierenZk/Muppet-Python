@@ -72,7 +72,7 @@ class TaskThread(Thread):
             err = None
             try:
                 out, err = self.shell_process.communicate(timeout=1)
-            except TimeoutError:
+            except Exception as _:
                 # Do nothing
                 pass
             if out is not None:
