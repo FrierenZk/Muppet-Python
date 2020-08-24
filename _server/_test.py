@@ -8,35 +8,39 @@ if __name__ == "__main__":
 
 
     @sio.event
-    def task_list(data):
+    def available_list(data):
         print(data)
 
 
     @sio.event
-    def list(data):
+    def processing_list(data):
         print(data)
 
 
     @sio.event
-    def waiting_count(data):
+    def waiting_list(data):
         print(data)
 
 
     @sio.event
-    def add(data):
+    def add_task(data):
         print(data)
 
 
     @sio.event
-    def stop(data):
+    def stop_task(data):
+        print(data)
+
+    @sio.event
+    def broadcast_logs(data):
         print(data)
 
 
     sio.emit('connect')
-    sio.emit('get_task_list')
-    sio.emit('get_list')
-    sio.emit('get_waiting_count')
-    sio.emit('add_task', 'wifi6')
-    sio.emit('stop_task', 'wifi6')
-    sleep(1)
+    sio.emit('get_available_list')
+    sio.emit('get_processing_list')
+    sio.emit('get_waiting_list')
+    sio.emit('set_add_task', 'wifi6')
+    sio.emit('set_stop_task', 'wifi6')
+    sleep(10)
     sio.disconnect()

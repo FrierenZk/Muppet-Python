@@ -61,16 +61,16 @@ class Server(Thread):
                 Thread(target=self.get_waiting_list, args=(sid,), daemon=True).start()
 
         @self.sio.event
-        def add_task(sid, data):
+        def set_add_task(sid, data):
             with start_action(action_type='add_task', sid=sid, data=data):
                 print(sid, 'Calling add_task', data)
-                Thread(target=self.add_task, args=(sid, data,), daemon=True).start()
+                Thread(target=self.set_add_task, args=(sid, data,), daemon=True).start()
 
         @self.sio.event
-        def stop_task(sid, data):
+        def set_stop_task(sid, data):
             with start_action(action_type='stop_task', sid=sid, data=data):
                 print(sid, 'Calling stop_task', data)
-                Thread(target=self.stop_task, args=(sid, data), daemon=True).start()
+                Thread(target=self.set_stop_task, args=(sid, data), daemon=True).start()
 
         port: int = 0
         try:
@@ -111,13 +111,13 @@ class Server(Thread):
         data = dumps(data)
         self.sio.emit(event='processing_list', room=sid, data=data)
 
-    def add_task(self, sid, data):
+    def set_add_task(self, sid, data):
         self.interface.add_task(line='execute ' + data)
-        self.sio.emit(event='add', room=sid, data='Add ' + data + ' done')
+        self.sio.emit(event='add_task', room=sid, data='Add ' + data + ' done')
 
-    def stop_task(self, sid, data):
+    def set_stop_task(self, sid, data):
         self.interface.stop_task(task=data, flag=False)
-        self.sio.emit(event='stop', room=sid, data='Stop ' + data + ' done')
+        self.sio.emit(event='stop_task', room=sid, data='Stop ' + data + ' done')
 
     def get_available_list(self, sid):
         data = {}
@@ -125,7 +125,10 @@ class Server(Thread):
         for i in tasks:
             data[i] = config.get_category(i)
         data = dumps(data)
-        self.sio.emit(event='list', room=sid, data=data)
+        self.sio.emit(event='available_list', room=sid, data=data)
 
     def broadcast_logs(self, task: str, log: str):
-        self.sio.emit(event='broadcast_logs', room=self.broadcast, data={'task': task, 'broadcast_logs': log})
+        try:
+            self.sio.emit(event='broadcast_logs', room=self.broadcast, data={'task': task, 'broadcast_logs': log})
+        except Exception as e:
+            print(e)
