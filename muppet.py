@@ -70,7 +70,7 @@ class Muppet(Process, ServerCallBackInterface):
         print("Task", task, "running")
         self.processing_task_dic_lock.acquire()
         self.processing_task_dic[task] = TaskThread(task, finish=self.stop_task,
-                                                    svn_check=svn_check)
+                                                    svn_check=svn_check, push=self.server.broadcast_logs)
         self.processing_task_dic[task].daemon = True
         self.processing_task_dic_lock.release()
         self.processing_task_dic[task].start()
