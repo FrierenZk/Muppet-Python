@@ -124,10 +124,12 @@ class Muppet(Process, ServerCallBackInterface):
         if task in self.processing_task_dic.keys():
             if flag is True:
                 self.processing_task_dic.pop(task)
+                self.server.broadcast_task_finish(task, "finished")
                 print("Task:", task, "finished")
             else:
                 self.processing_task_dic[task].terminate()
                 self.processing_task_dic.pop(task)
+                self.server.broadcast_task_finish(task, "terminated")
                 print("Task", task, "terminated")
         else:
             print("Task", task, "already removed")

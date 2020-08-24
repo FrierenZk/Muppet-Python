@@ -132,3 +132,9 @@ class Server(Thread):
             self.sio.emit(event='broadcast_logs', room=self.broadcast, data={'task': task, 'broadcast_logs': log})
         except Exception as e:
             print(e)
+
+    def broadcast_task_finish(self, task: str, msg: str):
+        try:
+            self.sio.emit(event='broadcast_task_finish', room=self.broadcast, data={'task': task, 'msg': msg})
+        except Exception as e:
+            print(e)
