@@ -1,7 +1,7 @@
 from json import dumps
 from multiprocessing import Queue
 from threading import Thread
-from json import load
+from json import load, dumps
 
 import socketio
 from eliot import to_file, start_action
@@ -129,12 +129,14 @@ class Server(Thread):
 
     def broadcast_logs(self, task: str, log: str):
         try:
-            self.sio.emit(event='broadcast_logs', room=self.broadcast, data={'task': task, 'broadcast_logs': log})
+            data = {'task': task, 'broadcast_logs': log}
+            self.sio.emit(event='broadcast_logs', room=self.broadcast, data=dumps(data))
         except Exception as e:
             print(e)
 
     def broadcast_task_finish(self, task: str, msg: str):
         try:
-            self.sio.emit(event='broadcast_task_finish', room=self.broadcast, data={'task': task, 'msg': msg})
+            data = {'task': task, 'msg': msg}
+            self.sio.emit(event='broadcast_task_finish', room=self.broadcast, data=dumps(data))
         except Exception as e:
             print(e)
