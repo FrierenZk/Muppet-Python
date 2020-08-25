@@ -68,6 +68,7 @@ class Muppet(Process, ServerCallBackInterface):
 
     def run_task(self, task: str, svn_check):
         print("Task", task, "running")
+        self.server.broadcast_task_status_change(task, "running")
         self.processing_task_dic_lock.acquire()
         self.processing_task_dic[task] = TaskThread(task, finish=self.stop_task,
                                                     svn_check=svn_check, push=self.server.broadcast_logs)
@@ -116,12 +117,14 @@ class Muppet(Process, ServerCallBackInterface):
         if i >= 0:
             task = line[i + len("execute "):].strip('\n').strip('\r').strip()
             self.task_push(task)
+            self.server.broadcast_task_status_change(task, "waiting")
             return True, task
         return False, None
 
     def stop_task(self, task: str, flag=True) -> None:
         self.processing_task_dic_lock.acquire()
         if task in self.processing_task_dic.keys():
+            self.server.broadcast_task_status_change(task, "stopping")
             if flag is True:
                 self.processing_task_dic.pop(task)
                 self.server.broadcast_task_finish(task, "finished")

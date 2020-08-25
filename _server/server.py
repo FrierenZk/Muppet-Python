@@ -133,8 +133,16 @@ class Server(Thread):
         except Exception as e:
             print(e)
 
+    def broadcast_task_status_change(self, task: str, state: str):
+        try:
+            data = {'task': task, 'state': state}
+            self.sio.emit(event='broadcast_task_status_change', room=self.broadcast, data=dumps(data))
+        except Exception as e:
+            print(e)
+
     def broadcast_task_finish(self, task: str, msg: str):
         try:
+            self.broadcast_task_status_change(task, "stopped")
             data = {'task': task, 'msg': msg}
             self.sio.emit(event='broadcast_task_finish', room=self.broadcast, data=dumps(data))
         except Exception as e:
