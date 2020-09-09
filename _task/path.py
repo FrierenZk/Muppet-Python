@@ -12,7 +12,7 @@ category_dir = {
 }
 
 
-def _server_dir(task: str):
+def _upload_dir(task: str):
     type_path: str
     category = config.get_category(task)
     if category is None:
